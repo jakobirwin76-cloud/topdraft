@@ -1,0 +1,31 @@
+<svg width="1024" height="1024" viewBox="0 0 1024 1024" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <radialGradient id="glow" cx="50%" cy="50%" r="55%">
+      <stop offset="0%" stop-color="#6366F1" stop-opacity="0.42"/>
+      <stop offset="55%" stop-color="#6366F1" stop-opacity="0.14"/>
+      <stop offset="100%" stop-color="#6366F1" stop-opacity="0"/>
+    </radialGradient>
+  </defs>
+
+  <!-- Background — deep obsidian -->
+  <rect width="1024" height="1024" fill="#0A0A0C"/>
+
+  <!-- Aurora glow behind mark -->
+  <circle cx="512" cy="512" r="480" fill="url(#glow)"/>
+
+  <!-- Indigo tile -->
+  <rect x="212" y="212" width="600" height="600" rx="80" fill="#6366F1"/>
+
+  <!-- Stock chart line, knocked out via bg color -->
+  <path
+    d="M319 662 L426 533 L512 576 L598 448 L705 340"
+    stroke="#0A0A0C"
+    stroke-width="40"
+    stroke-linecap="round"
+    stroke-linejoin="round"
+    fill="none"
+  />
+
+  <!-- Terminal dot at the chart's peak -->
+  <circle cx="705" cy="340" r="36" fill="#0A0A0C"/>
+</svg>

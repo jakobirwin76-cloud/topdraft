@@ -1,0 +1,1245 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
+  <title>Topdraft — your sports IQ is worth money</title>
+  <meta name="description" content="Skill-based fantasy sports trading. Buy fractional shares of athletes. Trade live on every play. Play money only. 18+." />
+
+  <!-- Favicon — inline SVG of the logo mark -->
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg viewBox='0 0 32 32' xmlns='http://www.w3.org/2000/svg'%3E%3Crect x='2' y='2' width='28' height='28' rx='4' fill='%236366F1'/%3E%3Cpath d='M7 23 L12 17 L16 19 L20 13 L25 8' stroke='%230A0A0C' stroke-width='1.9' stroke-linecap='round' stroke-linejoin='round' fill='none'/%3E%3Ccircle cx='25' cy='8' r='1.7' fill='%230A0A0C'/%3E%3C/svg%3E" />
+
+  <!-- Social cards -->
+  <meta property="og:title" content="Topdraft — stop being right for free" />
+  <meta property="og:description" content="Trade athletes like stocks. Live, on every play. Free to play. 18+. Top 1,000 lock in a Founder badge." />
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content="https://topdrafts.app/" />
+  <meta property="og:image" content="https://topdrafts.app/og.png" />
+  <meta property="og:image:width" content="1200" />
+  <meta property="og:image:height" content="630" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="Topdraft — stop being right for free" />
+  <meta name="twitter:description" content="Trade athletes like stocks. Live, on every play. Free to play. 18+." />
+  <meta name="twitter:image" content="https://topdrafts.app/og.png" />
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link rel="preconnect" href="https://sheetdb.io" crossorigin />
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500..800&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600;700&display=swap" />
+
+  <style>
+    @font-face {
+      font-family: "Nineties Headliner";
+      font-style: normal;
+      font-weight: 400;
+      font-display: swap;
+      src: url("fonts/NinetiesHeadliner-Regular.ttf") format("truetype");
+    }
+
+    :root {
+      --bg: #0A0A0C;
+      --surface: #131318;
+      --surface-2: #1B1B22;
+      --border: rgba(255,255,255,0.08);
+      --text: #FFFFFF;
+      --text-mute: #A1A1AA;
+      --text-dim: #52525B;
+      --accent: #6366F1;
+      --accent-2: #818CF8;
+      --win: #22C55E;
+      --loss: #EF4444;
+      --font-display: "Bricolage Grotesque", -apple-system, BlinkMacSystemFont, sans-serif;
+      --font-cyber: "Nineties Headliner", "Impact", "Arial Black", sans-serif;
+      --font-body: "Inter", -apple-system, BlinkMacSystemFont, sans-serif;
+      --font-data: "JetBrains Mono", ui-monospace, "SFMono-Regular", monospace;
+    }
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { background: var(--bg); -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale; scroll-behavior: smooth; }
+    body {
+      position: relative;
+      min-height: 100vh;
+      overflow-x: hidden;
+      background:
+        radial-gradient(ellipse 80% 50% at 50% 0%, #0F0820 0%, transparent 65%),
+        radial-gradient(ellipse 70% 40% at 50% 100%, #1A0820 0%, transparent 65%),
+        linear-gradient(180deg, #08081A 0%, #050508 50%, #0E0518 100%);
+      background-attachment: fixed;
+      color: var(--text);
+      font-family: var(--font-body);
+      font-feature-settings: "tnum" 1;
+    }
+    body::before {
+      content: "";
+      position: fixed; inset: -10%;
+      background:
+        radial-gradient(ellipse 100% 55% at 50% -5%, rgba(99,102,241,0.55), transparent 65%),
+        radial-gradient(ellipse 45% 40% at 0% 15%, rgba(56,189,248,0.40), transparent 65%),
+        radial-gradient(ellipse 45% 40% at 100% 15%, rgba(139,92,246,0.48), transparent 65%),
+        radial-gradient(ellipse 60% 30% at 50% 100%, rgba(99,102,241,0.14), transparent 70%);
+      filter: blur(70px);
+      pointer-events: none; z-index: -2;
+      animation: drift 32s ease-in-out infinite;
+      will-change: transform;
+    }
+    body::after {
+      content: "";
+      position: fixed; inset: 0;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 1 0 0 0 0 1 0 0 0 0 1 0 0 0 0.55 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+      opacity: 0.05; pointer-events: none; z-index: -1; mix-blend-mode: overlay;
+    }
+    @keyframes drift {
+      0%,100% { transform: translate(0,0) scale(1) rotate(0deg); }
+      33%     { transform: translate(-2%,1.5%) scale(1.04) rotate(0.6deg); }
+      66%     { transform: translate(2%,-1.5%) scale(0.98) rotate(-0.6deg); }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      body::before { animation: none; }
+      html { scroll-behavior: auto; }
+    }
+
+    a { color: inherit; text-decoration: none; }
+    button { font-family: inherit; cursor: pointer; }
+
+    *:focus-visible {
+      outline: 2px solid var(--accent);
+      outline-offset: 2px;
+      border-radius: 4px;
+    }
+
+    .wrap-6xl { max-width: 72rem; margin: 0 auto; padding: 0 1.25rem; }
+    .wrap-3xl { max-width: 48rem; margin: 0 auto; padding: 0 1.25rem; }
+    .wrap-2xl { max-width: 42rem; margin: 0 auto; padding: 0 1.25rem; }
+    @media (min-width: 768px) { .wrap-6xl, .wrap-3xl, .wrap-2xl { padding: 0 3rem; } }
+
+    nav.top {
+      position: sticky; top: 0; z-index: 40;
+      background: rgba(10,10,12,0.85);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--border);
+    }
+    nav.top .inner { display: flex; align-items: center; justify-content: space-between; padding: 1rem 0; }
+    .logo { display: inline-flex; align-items: center; gap: 0.625rem; line-height: 1; }
+    .logo svg { flex-shrink: 0; color: var(--accent); }
+    .logo .word { font-family: var(--font-display); font-weight: 700; font-size: 1.5rem; letter-spacing: -0.02em; color: var(--text); }
+    .logo-sm .word { font-size: 1rem; }
+
+    .label {
+      font-family: var(--font-body); font-weight: 500;
+      font-size: 0.75rem; text-transform: uppercase;
+      letter-spacing: 0.05em; color: var(--text-mute);
+    }
+
+    section.hero { padding: 1.5rem 0 4rem; }
+    @media (min-width: 768px) { section.hero { padding: 2.5rem 0 7rem; } }
+    .hero-grid { display: grid; gap: 3rem; align-items: start; }
+    @media (min-width: 768px) { .hero-grid { grid-template-columns: 1.15fr 1fr; gap: 5rem; } }
+    .hero h1 {
+      font-family: var(--font-cyber); font-weight: 400;
+      font-size: clamp(2.75rem, 9vw, 6rem); line-height: 1.05;
+      letter-spacing: -0.01em;
+      text-transform: uppercase;
+      margin: 1.5rem 0 1.75rem;
+      background: linear-gradient(135deg, #6366F1 0%, #A855F7 40%, #D946EF 70%, #22D3EE 100%);
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+      -webkit-text-fill-color: transparent;
+    }
+    .hero p.subhead {
+      font-size: 1rem; line-height: 1.7; color: var(--text-mute);
+      max-width: 28rem; margin-bottom: 2.5rem;
+    }
+    @media (min-width: 768px) {
+      .hero p.subhead { font-size: 1.125rem; margin-bottom: 3rem; }
+    }
+    .hero .counter, .cta .counter {
+      margin-top: 1.5rem; font-family: var(--font-data); font-size: 0.875rem;
+      color: var(--text-mute); font-variant-numeric: tabular-nums;
+    }
+    .counter .num { color: var(--text); font-weight: 600; }
+
+    form.waitlist {
+      display: flex; flex-direction: column; gap: 0.75rem; max-width: 28rem;
+    }
+    .input-rect {
+      background: rgba(255,255,255,0.02);
+      border: 1px solid var(--border);
+      border-radius: 0.625rem;
+      padding: 0.875rem 1rem;
+      color: var(--text); font-family: var(--font-body); font-size: 1rem;
+      outline: none;
+      transition: border-color 0.2s ease-in-out, box-shadow 0.2s ease-in-out, background 0.2s ease-in-out;
+    }
+    .input-rect::placeholder { color: var(--text-dim); }
+    .input-rect:hover { border-color: rgba(255,255,255,0.14); }
+    .input-rect:focus { border-color: var(--accent); background: rgba(255,255,255,0.04); box-shadow: 0 0 0 3px rgba(99,102,241,0.18); outline: none; }
+    button.primary {
+      display: inline-flex; align-items: center; justify-content: center; gap: 0.5rem;
+      background: var(--accent); color: #FFFFFF;
+      font-family: var(--font-body); font-weight: 500; font-size: 0.875rem;
+      border: none; border-radius: 0.5rem;
+      padding: 1rem 2rem;
+      transition: background 0.2s ease-in-out, transform 0.1s ease-in-out;
+    }
+    button.primary:hover:not(:disabled) { background: var(--accent-2); }
+    button.primary:active:not(:disabled) { transform: scale(0.98); }
+    button.primary:disabled { opacity: 0.5; cursor: not-allowed; }
+    form.waitlist .form-msg { font-size: 0.875rem; font-family: var(--font-body); min-height: 1.25rem; }
+    form.waitlist .form-note {
+      margin-top: 0.75rem; font-family: var(--font-data);
+      font-size: 0.6875rem; line-height: 1.5; letter-spacing: 0.03em;
+      text-transform: uppercase; color: var(--text-dim);
+    }
+    form.waitlist .form-msg.ok { color: var(--win); }
+    form.waitlist .form-msg.err:not([hidden]) {
+      display: flex; align-items: center; gap: 0.5rem;
+      margin-top: 0.625rem; padding: 0.75rem 0.875rem;
+      font-size: 0.9375rem; font-weight: 500; color: #FCA5A5;
+      background: rgba(239,68,68,0.10);
+      border: 1px solid rgba(239,68,68,0.35);
+      border-radius: 0.5rem; min-height: auto;
+    }
+    form.waitlist .form-msg.err:not([hidden])::before {
+      content: "!"; flex: none;
+      display: inline-flex; align-items: center; justify-content: center;
+      width: 1.125rem; height: 1.125rem; border-radius: 999px;
+      background: var(--loss); color: #fff;
+      font-size: 0.75rem; font-weight: 700;
+    }
+    /* Hidden labels (sr-only) + honeypot input (off-screen) */
+    .hp { position: absolute; left: -9999px; }
+    .honeypot {
+      position: absolute !important;
+      left: -9999px !important;
+      width: 1px !important; height: 1px !important;
+      opacity: 0 !important;
+      pointer-events: none !important;
+      tab-index: -1;
+    }
+    .btn-label { display: inline-flex; align-items: center; gap: 0.5rem; }
+
+    /* Success state — shown after a real signup */
+    .success-state {
+      background: rgba(34, 197, 94, 0.05);
+      border: 1px solid rgba(34, 197, 94, 0.22);
+      border-radius: 0.625rem;
+      padding: 1.5rem;
+      max-width: 28rem;
+    }
+    .success-state .badge {
+      display: inline-flex; align-items: center; gap: 0.375rem;
+      font-family: var(--font-body); font-weight: 600; font-size: 0.75rem;
+      letter-spacing: 0.08em; text-transform: uppercase; color: var(--win);
+      margin-bottom: 1rem;
+    }
+    .success-state .pos {
+      font-family: var(--font-display); font-weight: 700;
+      font-size: 3rem; line-height: 1; letter-spacing: -0.03em;
+      color: var(--text); margin-bottom: 0.5rem;
+      font-variant-numeric: tabular-nums;
+    }
+    .success-state .pos-label {
+      font-family: var(--font-data); font-size: 0.625rem;
+      text-transform: uppercase; letter-spacing: 0.15em;
+      color: var(--text-mute); margin-bottom: 1rem;
+    }
+    .success-state .msg {
+      font-size: 0.875rem; color: var(--text-mute); line-height: 1.6;
+    }
+    .success-state .msg strong { color: var(--text); font-weight: 500; }
+    .success-state .share {
+      margin-top: 1.5rem; display: flex; gap: 0.5rem; flex-wrap: wrap;
+    }
+    .success-state .share button,
+    .success-state .share a {
+      display: inline-flex; align-items: center; gap: 0.375rem;
+      background: rgba(255,255,255,0.04); border: 1px solid var(--border);
+      color: var(--text); font-family: var(--font-body); font-weight: 500;
+      font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.05em;
+      padding: 0.625rem 1rem; border-radius: 0.375rem;
+      cursor: pointer; transition: background 0.2s ease-in-out;
+    }
+    .success-state .share button:hover,
+    .success-state .share a:hover { background: rgba(255,255,255,0.08); }
+
+    /* Referral block */
+    .success-state .ref-block {
+      margin-top: 1.25rem; border-top: 1px solid var(--border); padding-top: 1.25rem;
+    }
+    .success-state .ref-head {
+      font-family: var(--font-data); font-size: 0.625rem;
+      text-transform: uppercase; letter-spacing: 0.15em;
+      color: var(--accent-2); margin-bottom: 0.375rem;
+    }
+    .success-state .ref-sub {
+      font-size: 0.8125rem; color: var(--text-mute);
+      line-height: 1.55; margin-bottom: 0.875rem;
+    }
+    .success-state .ref-sub strong { color: var(--text); font-weight: 600; }
+    .success-state .ref-linkrow { display: flex; gap: 0.5rem; }
+    .success-state .ref-link {
+      flex: 1; min-width: 0; background: rgba(255,255,255,0.04);
+      border: 1px solid var(--border); border-radius: 0.375rem;
+      color: var(--text); font-family: var(--font-data);
+      font-size: 0.75rem; padding: 0.625rem 0.75rem;
+    }
+    .success-state .ref-link:focus { outline: 2px solid var(--accent); outline-offset: 1px; }
+    .success-state .ref-linkrow button {
+      flex: none; background: var(--accent); border: 1px solid var(--accent);
+      color: #fff; font-family: var(--font-body); font-weight: 600;
+      font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.05em;
+      padding: 0 1rem; border-radius: 0.375rem; cursor: pointer;
+      transition: background 0.2s ease-in-out;
+    }
+    .success-state .ref-linkrow button:hover { background: var(--accent-2); border-color: var(--accent-2); }
+    .success-state .ref-x {
+      display: inline-flex; align-items: center; gap: 0.375rem; margin-top: 0.625rem;
+      background: rgba(255,255,255,0.04); border: 1px solid var(--border);
+      color: var(--text); font-family: var(--font-body); font-weight: 500;
+      font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.05em;
+      padding: 0.625rem 1rem; border-radius: 0.375rem; text-decoration: none;
+      transition: background 0.2s ease-in-out;
+    }
+    .success-state .ref-x:hover { background: rgba(255,255,255,0.08); }
+    .success-state .ref-progress { margin-top: 1.125rem; }
+    .success-state .ref-bar {
+      height: 6px; background: rgba(255,255,255,0.08);
+      border-radius: 999px; overflow: hidden;
+    }
+    .success-state .ref-bar span {
+      display: block; height: 100%; width: 0%;
+      background: var(--accent); border-radius: 999px;
+      transition: width 0.6s ease-in-out;
+    }
+    .success-state .ref-count {
+      margin-top: 0.5rem; font-family: var(--font-data);
+      font-size: 0.6875rem; text-transform: uppercase;
+      letter-spacing: 0.1em; color: var(--text-mute);
+    }
+    .success-state .ref-count strong { color: var(--win); }
+
+    /* Trade card */
+    .trade-mock {
+      position: relative; background: rgba(255,255,255,0.03);
+      border: 1px solid var(--border); border-radius: 0.75rem;
+      backdrop-filter: blur(16px) saturate(140%);
+      padding: 1.5rem;
+      user-select: none;
+    }
+    @media (min-width: 768px) { .trade-mock { padding: 1.75rem; } }
+    /* Hero mock: visible on mobile (below the form) so the product is seen above the fold-ish */
+    .trade-mock.hide-mobile { display: block; }
+    .trade-header { display: flex; align-items: center; gap: 1rem; margin-bottom: 2rem; }
+    .portrait {
+      width: 3.5rem; height: 3.5rem; flex-shrink: 0;
+      background: rgba(99,102,241,0.10);
+      border-radius: 50%;
+      box-shadow: 0 0 0 1px rgba(99,102,241,0.40),
+        0 12px 32px rgba(99,102,241,0.32),
+        0 0 18px rgba(99,102,241,0.18);
+      display: flex; align-items: center; justify-content: center;
+      font-family: var(--font-display); font-weight: 700;
+      font-size: 1.25rem; letter-spacing: -0.02em;
+      color: var(--text); transition: background 0.4s ease;
+    }
+    @media (min-width: 768px) { .portrait { width: 4rem; height: 4rem; font-size: 1.5rem; } }
+    .trade-id { flex: 1; min-width: 0; transition: opacity 0.2s ease; }
+    .trade-id .name {
+      font-family: var(--font-display); font-weight: 700; font-size: 1.125rem;
+      letter-spacing: -0.02em; line-height: 1.2; white-space: nowrap;
+      overflow: hidden; text-overflow: ellipsis; color: var(--text);
+    }
+    @media (min-width: 768px) { .trade-id .name { font-size: 1.25rem; } }
+    .trade-id .sub {
+      font-family: var(--font-data); font-size: 0.625rem;
+      text-transform: uppercase; letter-spacing: 0.1em; color: var(--text-mute);
+      margin-top: 0.25rem;
+    }
+    .change-pill {
+      display: inline-flex; align-items: center; gap: 0.25rem;
+      font-family: var(--font-data); font-weight: 600; font-size: 0.75rem;
+      padding: 0.25rem 0.5rem; border: 1px solid; border-radius: 0;
+      font-variant-numeric: tabular-nums;
+    }
+    .change-pill.up { color: var(--win); border-color: rgba(34,197,94,0.4); }
+    .change-pill.down { color: var(--loss); border-color: rgba(239,68,68,0.4); }
+    .change-pill svg { width: 0.75rem; height: 0.75rem; transition: transform 0.2s ease; }
+    .change-pill.down svg { transform: rotate(90deg); }
+    .price-block .label-mini {
+      font-family: var(--font-data); font-size: 0.625rem;
+      text-transform: uppercase; letter-spacing: 0.2em; color: var(--text-dim);
+      margin-bottom: 0.5rem;
+    }
+    .price-block .price-line {
+      display: flex; align-items: baseline; gap: 0.5rem;
+      font-family: var(--font-data); font-variant-numeric: tabular-nums;
+    }
+    .price-block .dollar { color: var(--text-mute); font-weight: 500; font-size: 1.875rem; }
+    @media (min-width: 768px) { .price-block .dollar { font-size: 2.25rem; } }
+    .price-block .price {
+      color: var(--text); font-weight: 700; font-size: 3rem; line-height: 1;
+      letter-spacing: -0.02em;
+      transition: color 0.18s ease;
+      font-variant-numeric: tabular-nums;
+    }
+    .price-block .price.flash-up { color: var(--win); }
+    .price-block .price.flash-down { color: var(--loss); }
+    @media (min-width: 768px) { .price-block .price { font-size: 3.75rem; } }
+    .events {
+      margin-top: 2rem; padding-top: 1.5rem;
+      border-top: 1px solid rgba(99,102,241,0.10);
+    }
+    .events .label-mini { font-family: var(--font-data); font-size: 0.625rem; text-transform: uppercase; letter-spacing: 0.2em; color: var(--text-dim); margin-bottom: 1rem; }
+    .events .row {
+      display: flex; align-items: center; justify-content: space-between;
+      font-size: 0.75rem; padding: 0.375rem 0;
+      transition: opacity 0.35s ease, transform 0.35s ease;
+    }
+    .events .row.pending { opacity: 0.22; }
+    .events .row.done { opacity: 0.6; }
+    .events .row.live { opacity: 1; animation: rowIn 0.5s cubic-bezier(0.22,1,0.36,1); }
+    @keyframes rowIn {
+      from { opacity: 0; transform: translateY(8px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      .events .row.live { animation: none; }
+    }
+    .events .row .what { font-family: var(--font-data); color: var(--text-mute); text-transform: uppercase; letter-spacing: 0.06em; }
+    .events .row .pct { font-family: var(--font-data); font-weight: 600; font-variant-numeric: tabular-nums; }
+    .events .row .pct.up { color: var(--win); }
+    .events .row .pct.down { color: var(--loss); }
+
+    section.trust { border-top: 1px solid var(--border); padding: 1.5rem 0; }
+    section.trust .inner { display: flex; flex-wrap: wrap; gap: 0.75rem; justify-content: center; }
+    .pill {
+      border: 1px solid var(--border); border-radius: 0.375rem;
+      padding: 0.5rem 1rem;
+      font-size: 0.75rem; font-weight: 500; text-transform: uppercase;
+      letter-spacing: 0.05em; color: var(--text-mute);
+    }
+
+    section.problem { border-top: 1px solid var(--border); padding: 6rem 0; }
+    @media (min-width: 768px) { section.problem { padding: 8rem 0; } }
+    .problem-grid { display: grid; gap: 3rem; align-items: start; }
+    @media (min-width: 768px) { .problem-grid { grid-template-columns: 1fr 1fr; gap: 6rem; } }
+    .problem h2 {
+      font-family: var(--font-display); font-weight: 700;
+      font-size: clamp(2rem, 5vw, 3.75rem); line-height: 1.1;
+      letter-spacing: -0.03em;
+    }
+    .problem h2 .accent { color: var(--accent); }
+    .problem p { color: var(--text-mute); line-height: 1.7; font-size: 1rem; }
+    @media (min-width: 768px) { .problem p { font-size: 1.125rem; } }
+
+    section.how { border-top: 1px solid var(--border); background: rgba(19,19,24,0.4); padding: 6rem 0; }
+    @media (min-width: 768px) { section.how { padding: 8rem 0; } }
+    section.how .label { margin-bottom: 3rem; }
+    .tiles { display: grid; grid-template-columns: 1fr; gap: 1.25rem; }
+    @media (min-width: 768px) { .tiles { grid-template-columns: repeat(3, 1fr); } }
+    .tile {
+      border: 1px solid var(--border); background: var(--surface); border-radius: 0.75rem;
+      padding: 2rem;
+      transition: background 0.2s ease-in-out;
+    }
+    .tile:hover { background: var(--surface-2); }
+    .tile svg.icon { width: 1.5rem; height: 1.5rem; color: var(--accent); margin-bottom: 2rem; }
+    .tile h3 { font-family: var(--font-display); font-weight: 700; font-size: 1.25rem; letter-spacing: -0.02em; line-height: 1.2; margin-bottom: 0.75rem; }
+    @media (min-width: 768px) { .tile h3 { font-size: 1.5rem; } }
+    .tile p { color: var(--text-mute); line-height: 1.6; font-size: 0.875rem; }
+
+    /* Redundant on mobile (hero mock now shows there); keep it desktop-only */
+    section.demo { display: none; border-top: 1px solid var(--border); border-bottom: 1px solid var(--border); padding: 6rem 0; }
+    @media (min-width: 768px) { section.demo { display: block; padding: 8rem 0; } }
+    section.demo .label { text-align: center; margin-bottom: 2.5rem; }
+    section.demo .caption { color: var(--text-mute); font-size: 0.875rem; text-align: center; max-width: 28rem; margin: 2.5rem auto 0; line-height: 1.6; }
+
+    section.faq { padding: 6rem 0; }
+    @media (min-width: 768px) { section.faq { padding: 8rem 0; } }
+    section.faq .label { margin-bottom: 2.5rem; }
+    .faq-list { border-top: 1px solid var(--border); }
+    .faq-item { border-bottom: 1px solid var(--border); }
+    .faq-q {
+      width: 100%; display: flex; align-items: center; justify-content: space-between;
+      gap: 1.5rem; padding: 1.5rem 0.5rem; text-align: left;
+      background: transparent; border: none; color: inherit;
+      transition: background 0.15s ease-in-out;
+    }
+    .faq-q:hover { background: rgba(19,19,24,0.4); }
+    .faq-q .q-text { font-family: var(--font-display); font-weight: 700; font-size: 1.25rem; letter-spacing: -0.02em; color: var(--text); }
+    @media (min-width: 768px) { .faq-q .q-text { font-size: 1.5rem; } }
+    .faq-q .chev { color: var(--text-mute); transition: transform 0.25s ease; flex-shrink: 0; }
+    .faq-item[aria-expanded="true"] .chev { transform: rotate(180deg); }
+    .faq-a {
+      overflow: hidden; max-height: 0;
+      transition: max-height 0.3s ease, padding 0.3s ease;
+    }
+    .faq-a p {
+      padding: 0 0.5rem 1.5rem;
+      color: var(--text-mute); font-size: 0.875rem; line-height: 1.7;
+      max-width: 42rem;
+    }
+    .faq-item[aria-expanded="true"] .faq-a { max-height: 400px; }
+
+    section.cta { border-top: 1px solid var(--border); background: rgba(19,19,24,0.4); padding: 6rem 0; text-align: center; }
+    @media (min-width: 768px) { section.cta { padding: 8rem 0; } }
+    section.cta h2 {
+      font-family: var(--font-display); font-weight: 700;
+      font-size: clamp(2.25rem, 6vw, 4.5rem); line-height: 1.1;
+      letter-spacing: -0.04em; margin-bottom: 1.75rem;
+    }
+    section.cta h2 .accent { color: var(--accent); }
+    section.cta p.subhead { color: var(--text-mute); font-size: 1rem; line-height: 1.6; max-width: 32rem; margin: 0 auto 3rem; }
+    @media (min-width: 768px) { section.cta p.subhead { font-size: 1.125rem; } }
+    section.cta form.waitlist, section.cta .success-state { margin: 0 auto; }
+
+    footer { border-top: 1px solid var(--border); padding: 2.5rem 0; }
+    footer .row {
+      display: flex; flex-wrap: wrap; gap: 0.75rem 1.5rem;
+      align-items: center; font-family: var(--font-body); font-weight: 500;
+      font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.05em;
+      color: var(--text-dim);
+    }
+    footer .row a { transition: color 0.2s ease-in-out; }
+    footer .row a:hover { color: var(--text-mute); }
+    footer .row .copyright { margin-left: auto; }
+  </style>
+</head>
+<body>
+
+  <nav class="top">
+    <div class="wrap-6xl inner">
+      <a href="#top" class="logo" aria-label="Topdraft home">
+        <svg width="26" height="26" viewBox="0 0 32 32" fill="none" aria-hidden="true">
+          <rect x="2" y="2" width="28" height="28" rx="4" fill="currentColor"/>
+          <path d="M7 23 L12 17 L16 19 L20 13 L25 8" stroke="#0A0A0C" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+          <circle cx="25" cy="8" r="1.7" fill="#0A0A0C"/>
+        </svg>
+        <span class="word">Topdraft</span>
+      </a>
+    </div>
+  </nav>
+
+  <section class="hero" id="top">
+    <div class="wrap-6xl">
+      <div class="hero-grid">
+        <div>
+          <div class="label">Waitlist</div>
+          <h1>Stop being right<br/>for free.</h1>
+          <p class="subhead">Buy fractional shares of athletes. Trade live on every play. Play money only — top 1,000 get a permanent Founder badge. Refer friends to skip the line.</p>
+
+          <div data-form-slot>
+            <form class="waitlist" data-waitlist-form novalidate>
+              <label for="email-hero" class="hp">Email</label>
+              <input id="email-hero" class="input-rect" type="email" name="email" placeholder="you@email.com" required autocomplete="email" />
+
+              <!-- Honeypot — bots fill every visible field. Real users leave this empty. -->
+              <input id="b_address" name="b_address" class="honeypot" type="text" tabindex="-1" autocomplete="off" aria-hidden="true" />
+
+              <button class="primary" type="submit">
+                <span class="btn-label">Claim my Founder spot</span>
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+              </button>
+              <p class="form-note">Only the first 1,000 lock the Founder badge · no spam — one email the day we open</p>
+              <div class="form-msg err" data-error role="alert" hidden></div>
+            </form>
+          </div>
+          <div data-success-slot hidden>
+            <div class="success-state" role="status" aria-live="polite">
+              <div class="badge">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg>
+                On the list
+              </div>
+              <div class="pos" style="font-size: 1.875rem; line-height: 1.2;">You're on the list.</div>
+              <p class="msg">We'll email you the moment the doors open. Want in sooner?</p>
+              <div class="ref-block" data-ref-block>
+                <div class="ref-head">Skip the line</div>
+                <p class="ref-sub">Every friend who joins with your link moves you up <strong>50 spots</strong>. Refer <strong>3</strong> and your Founder badge is locked for life.</p>
+                <div class="ref-linkrow">
+                  <input class="ref-link" data-ref-link readonly aria-label="Your referral link" />
+                  <button type="button" data-copy>Copy</button>
+                </div>
+                <a class="ref-x" data-ref-x href="#" target="_blank" rel="noopener noreferrer">
+                  <svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
+                  Share on X
+                </a>
+                <div class="ref-progress">
+                  <div class="ref-bar"><span data-ref-fill></span></div>
+                  <div class="ref-count" data-ref-count>Loading your referrals…</div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="counter" data-counter>Be one of the first to lock in a Founder badge</div>
+        </div>
+        <div class="trade-mock hide-mobile">
+          <div class="trade-header">
+            <div class="portrait" data-initials>PM</div>
+            <div class="trade-id">
+              <div class="name" data-name>Patrick Mahomes</div>
+              <div class="sub" data-sub>NFL · QB · KC</div>
+            </div>
+            <div class="change-pill" data-pill>
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><path d="M7 17L17 7M17 7H8M17 7V16"/></svg>
+              <span data-pct>+5.2%</span>
+            </div>
+          </div>
+          <div class="price-block">
+            <div class="label-mini">Current Price</div>
+            <div class="price-line">
+              <span class="dollar">$</span>
+              <span class="price" data-price>478.61</span>
+            </div>
+          </div>
+          <div class="events">
+            <div class="label-mini">Live · last 3 events</div>
+            <div data-event-list></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="trust">
+    <div class="wrap-6xl inner">
+      <span class="pill">$0 to play · ever</span>
+      <span class="pill">18+ · skill-based</span>
+      <span class="pill">Not gambling · not securities</span>
+    </div>
+  </section>
+
+  <section class="problem">
+    <div class="wrap-6xl">
+      <div class="problem-grid">
+        <h2>Being right<br/>about sports<br/><span class="accent">doesn't pay you back.</span></h2>
+        <p>Topdraft flips that. Buy a share of an athlete before kickoff. Their price moves on every play — touchdowns, goals, injuries, anything that hits the live feed. Sell for virtual currency. Climb the leaderboard. Top 1,000 on the waitlist lock in a Founder badge for life.</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="how">
+    <div class="wrap-6xl">
+      <div class="label">How it works</div>
+      <div class="tiles">
+        <div class="tile">
+          <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9H4.5a2.5 2.5 0 0 1 0-5H6"/><path d="M18 9h1.5a2.5 2.5 0 0 0 0-5H18"/><path d="M4 22h16"/><path d="M10 14.66V17c0 .55-.47.98-.97 1.21C7.85 18.75 7 20.24 7 22"/><path d="M14 14.66V17c0 .55.47.98.97 1.21C16.15 18.75 17 20.24 17 22"/><path d="M18 2H6v7a6 6 0 0 0 12 0V2Z"/></svg>
+          <h3>Pick athletes</h3>
+          <p>Browse NFL, NBA, and Soccer. Buy a fractional share at the current price. Hold one or fifty.</p>
+        </div>
+        <div class="tile">
+          <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m13 2-3 7h6l-3 7"/><path d="M4 14L19 14"/></svg>
+          <h3>Watch prices move</h3>
+          <p>Every play moves a price. Touchdowns up. Interceptions down. Real stats, real time.</p>
+        </div>
+        <div class="tile">
+          <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M11.562 3.266a.5.5 0 0 1 .876 0L15.39 8.87a1 1 0 0 0 1.516.294L21.183 5.5a.5.5 0 0 1 .798.519l-2.834 10.246a1 1 0 0 1-.956.734H5.81a1 1 0 0 1-.957-.734L2.02 6.02a.5.5 0 0 1 .798-.519l4.276 3.664a1 1 0 0 0 1.516-.294z"/><path d="M5 21h14"/></svg>
+          <h3>Climb the leaderboard</h3>
+          <p>Sell for virtual currency. Track your daily, weekly, and all-time ROI against everyone else.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="demo">
+    <div class="wrap-2xl">
+      <div class="label">Live demo</div>
+      <div class="trade-mock" id="demo-mock">
+        <div class="trade-header">
+          <div class="portrait" data-initials>PM</div>
+          <div class="trade-id">
+            <div class="name" data-name>Patrick Mahomes</div>
+            <div class="sub" data-sub>NFL · QB · KC</div>
+          </div>
+          <div class="change-pill" data-pill>
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><path d="M7 17L17 7M17 7H8M17 7V16"/></svg>
+            <span data-pct>+5.2%</span>
+          </div>
+        </div>
+        <div class="price-block">
+          <div class="label-mini">Current Price</div>
+          <div class="price-line">
+            <span class="dollar">$</span>
+            <span class="price" data-price>478.61</span>
+          </div>
+        </div>
+        <div class="events">
+          <div class="label-mini">Live · last 3 events</div>
+          <div data-event-list></div>
+        </div>
+      </div>
+      <p class="caption">Every play moves a price. Trade in real time.</p>
+    </div>
+  </section>
+
+  <section class="faq">
+    <div class="wrap-3xl">
+      <div class="label">FAQ</div>
+      <div class="faq-list" id="faq">
+        <div class="faq-item" aria-expanded="true">
+          <button class="faq-q" type="button" aria-controls="faq-a-1"><span class="q-text">Is this gambling?</span><svg class="chev" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg></button>
+          <div class="faq-a" id="faq-a-1"><p>No. Topdraft is a skill-based fantasy game framed under the federal DFS exemption (UIGEA). All gameplay uses virtual currency with no cash value. 18+ only. We don't accept bets, take a vig, or hold real-money positions.</p></div>
+        </div>
+        <div class="faq-item" aria-expanded="false">
+          <button class="faq-q" type="button" aria-controls="faq-a-2"><span class="q-text">Is it really free?</span><svg class="chev" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg></button>
+          <div class="faq-a" id="faq-a-2"><p>Yes — to play. We make money through an optional premium subscription and skill-game-adjacent partner programs (never sportsbooks or casinos). The core game is free forever.</p></div>
+        </div>
+        <div class="faq-item" aria-expanded="false">
+          <button class="faq-q" type="button" aria-controls="faq-a-3"><span class="q-text">What sports?</span><svg class="chev" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg></button>
+          <div class="faq-a" id="faq-a-3"><p>NFL, NBA, and Soccer (Premier League, UCL, MLS) at launch. MLB and NHL follow once the core loop is proven.</p></div>
+        </div>
+        <div class="faq-item" aria-expanded="false">
+          <button class="faq-q" type="button" aria-controls="faq-a-4"><span class="q-text">How do I actually get in?</span><svg class="chev" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg></button>
+          <div class="faq-a" id="faq-a-4"><p>Join the waitlist. Top 1,000 get a permanent Founder badge plus first access at launch. Refer friends to climb the queue.</p></div>
+        </div>
+        <div class="faq-item" aria-expanded="false">
+          <button class="faq-q" type="button" aria-controls="faq-a-5"><span class="q-text">Why now?</span><svg class="chev" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg></button>
+          <div class="faq-a" id="faq-a-5"><p>Mojo raised $100M and shut down without finding product-market fit. Sorare built a fantasy NFT product but missed the live-trading instinct. Topdraft is the social-first, live-trading version those products promised.</p></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="cta">
+    <div class="wrap-2xl">
+      <h2>Your sports IQ<br/><span class="accent">is worth money.</span></h2>
+      <p class="subhead">Free to play. 18+. Top 1,000 lock in a Founder badge — first access at launch.</p>
+      <div data-form-slot>
+        <form class="waitlist" data-waitlist-form novalidate>
+          <label for="email-cta" class="hp">Email</label>
+          <input id="email-cta" class="input-rect" type="email" name="email" placeholder="you@email.com" required autocomplete="email" />
+
+          <!-- Honeypot — same name as hero form (each form's scope is separate; unique id avoids DOM collision). -->
+          <input id="b_address_2" name="b_address" class="honeypot" type="text" tabindex="-1" autocomplete="off" aria-hidden="true" />
+
+          <button class="primary" type="submit">
+            <span class="btn-label">Join the waitlist</span>
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+          </button>
+          <p class="form-note">Only the first 1,000 lock the Founder badge · no spam, one email when we launch</p>
+          <div class="form-msg err" data-error role="alert" hidden></div>
+        </form>
+      </div>
+      <div data-success-slot hidden>
+        <div class="success-state" role="status" aria-live="polite" style="margin: 0 auto;">
+          <div class="badge">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg>
+            On the list
+          </div>
+          <div class="pos" style="font-size: 1.875rem; line-height: 1.2;">You're on the list.</div>
+          <p class="msg">We'll email you the moment the doors open. Want in sooner?</p>
+          <div class="ref-block" data-ref-block>
+            <div class="ref-head">Skip the line</div>
+            <p class="ref-sub">Every friend who joins with your link moves you up <strong>50 spots</strong>. Refer <strong>3</strong> and your Founder badge is locked for life.</p>
+            <div class="ref-linkrow">
+              <input class="ref-link" data-ref-link readonly aria-label="Your referral link" />
+              <button type="button" data-copy>Copy</button>
+            </div>
+            <a class="ref-x" data-ref-x href="#" target="_blank" rel="noopener noreferrer">
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
+              Share on X
+            </a>
+            <div class="ref-progress">
+              <div class="ref-bar"><span data-ref-fill></span></div>
+              <div class="ref-count" data-ref-count>Loading your referrals…</div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="counter" data-counter style="margin-top:1.5rem;">Be one of the first to lock in a Founder badge</div>
+    </div>
+  </section>
+
+  <footer>
+    <div class="wrap-6xl row">
+      <a href="#top" class="logo logo-sm" aria-label="Topdraft home">
+        <svg width="18" height="18" viewBox="0 0 32 32" fill="none" aria-hidden="true">
+          <rect x="2" y="2" width="28" height="28" rx="3" fill="currentColor"/>
+          <path d="M7 23 L12 17 L16 19 L20 13 L25 8" stroke="#0A0A0C" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+          <circle cx="25" cy="8" r="1.4" fill="#0A0A0C"/>
+        </svg>
+        <span class="word">Topdraft</span>
+      </a>
+      <a href="mailto:jakobirwin76@gmail.com">Contact</a>
+      <span class="copyright">© 2026 · Skill-based fantasy · 18+</span>
+    </div>
+  </footer>
+
+  <script>
+    /* =========================================================
+       Topdraft client logic.
+       - Real form submission via Netlify Forms (zero backend code)
+       - Cross-user counter via abacus.jasoncameron.dev (with
+         localStorage fallback if the API is unreachable)
+       - "You're in" success state replaces the form after submit
+       - Re-shows success state on return visits (localStorage)
+       - Animated trade card cycler
+       - Accessible FAQ accordion
+       ========================================================= */
+
+    /* =========================================================
+       1. THE BACKEND — SheetDB
+       Sign up at sheetdb.io, connect your Google Sheet, paste URL here.
+       Sheet headers (row 1, exact): email · joined_at · source
+       ========================================================= */
+    const SHEETDB_URL = "https://sheetdb.io/api/v1/8uhns4pwu9vkd";
+    const RETRY_DELAY_MS = 1500;
+    const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    const LS_SUBMITTED = "topdraft.submitted";
+    const LS_REFCODE   = "topdraft.refcode";
+    const LS_REFERRER  = "topdraft.referrer";
+    const REF_GOAL     = 3;   // referrals to lock the Founder badge
+    const REF_JUMP     = 50;  // spots jumped per referral
+    const LS_COUNT     = "topdraft.count.cache";
+    const LS_REFCOUNT  = "topdraft.refcount.cache.";   // + code
+    const COUNT_TTL_MS = 60 * 60 * 1000;  // /count: 1 hour
+    const REF_TTL_MS   = 5 * 60 * 1000;   // /search: 5 min
+
+    /* ---------- SheetDB request cache ----------
+       Collapses repeat GETs to /count and /search so a viral spike
+       doesn't blow the SheetDB free-tier request cap. POSTs (signups)
+       are never cached. Returns {fresh,val} — fresh=false means the
+       value is a stale fallback (expired or no entry). */
+    function cacheGet(key, ttlMs) {
+      try {
+        const raw = localStorage.getItem(key);
+        if (!raw) return { fresh: false, val: null };
+        const { v, t } = JSON.parse(raw);
+        return { fresh: (Date.now() - t) < ttlMs, val: v };
+      } catch (_) { return { fresh: false, val: null }; }
+    }
+    function cacheSet(key, val) {
+      try {
+        localStorage.setItem(key, JSON.stringify({ v: val, t: Date.now() }));
+      } catch (_) { /* quota / private mode — degrade to uncached */ }
+    }
+
+    /* ---------- Referral helpers ---------- */
+
+    // Capture ?ref=CODE on first visit, persist so it survives the signup.
+    function captureReferrer() {
+      const fromUrl = new URLSearchParams(location.search).get("ref");
+      if (fromUrl && !localStorage.getItem(LS_REFERRER)) {
+        localStorage.setItem(LS_REFERRER, fromUrl.trim().slice(0, 24));
+      }
+      return localStorage.getItem(LS_REFERRER) || "";
+    }
+
+    // This visitor's own code — generated once, reused on return visits.
+    function myRefCode() {
+      let code = localStorage.getItem(LS_REFCODE);
+      if (!code) {
+        const buf = new Uint32Array(2);
+        crypto.getRandomValues(buf);
+        code = "td-" + (buf[0].toString(36) + buf[1].toString(36))
+          .replace(/[^a-z0-9]/g, "").slice(0, 6).toUpperCase();
+        localStorage.setItem(LS_REFCODE, code);
+      }
+      return code;
+    }
+
+    function refLink(code) {
+      return location.origin + location.pathname + "?ref=" + code;
+    }
+
+    // Count how many people signed up with this code (SheetDB search).
+    async function fetchReferralCount(code) {
+      const ck = LS_REFCOUNT + code;
+      const cached = cacheGet(ck, REF_TTL_MS);
+      if (cached.fresh) return cached.val;
+      try {
+        const res = await fetch(
+          `${SHEETDB_URL}/search?referred_by=${encodeURIComponent(code)}`
+        );
+        if (!res.ok) return cached.val ?? 0;
+        const rows = await res.json();
+        const n = Array.isArray(rows) ? rows.length : 0;
+        cacheSet(ck, n);
+        return n;
+      } catch (_) { return cached.val ?? 0; }
+    }
+
+    function paintProgress(n) {
+      const pct = Math.min(n / REF_GOAL, 1) * 100;
+      document.querySelectorAll("[data-ref-fill]").forEach(el => {
+        el.style.width = pct + "%";
+      });
+      document.querySelectorAll("[data-ref-count]").forEach(el => {
+        if (n >= REF_GOAL) {
+          el.innerHTML = `<strong>Founder badge locked.</strong> ${n} joined · jumped ${n * REF_JUMP} spots`;
+        } else if (n > 0) {
+          el.innerHTML = `${n}/${REF_GOAL} joined · jumped ${n * REF_JUMP} spots · ${REF_GOAL - n} more locks your Founder badge`;
+        } else {
+          el.textContent = `0/${REF_GOAL} joined — share your link to skip the line`;
+        }
+      });
+    }
+
+    async function renderReferral() {
+      const code = myRefCode();
+      const link = refLink(code);
+      document.querySelectorAll("[data-ref-link]").forEach(el => { el.value = link; });
+      const tweet = `I just claimed my spot on the @Topdraft waitlist — trade athletes like stocks. Jump in with my link:`;
+      document.querySelectorAll("[data-ref-x]").forEach(el => {
+        el.href = `https://x.com/intent/tweet?text=${encodeURIComponent(tweet)}&url=${encodeURIComponent(link)}`;
+      });
+      paintProgress(await fetchReferralCount(code));
+    }
+
+    /* =========================================================
+       2. THE PERFORMANCE FORMULA
+       Pure, modular. Decoupled from UI so the engine can be
+       imported into the live app later without changes.
+       ========================================================= */
+    const normalize = (value, min, max) => {
+      if (!Number.isFinite(value) || max === min) return 50;
+      const clamped = Math.max(min, Math.min(max, value));
+      return ((clamped - min) / (max - min)) * 100;
+    };
+    const weighted = (parts) =>
+      Math.round(parts.reduce((sum, [v, w]) => sum + v * w, 0) * 10) / 10;
+
+    const PERFORMANCE_CALCULATORS = {
+      // Basketball / Guard — Assist-to-Turnover ratio + True Shooting %
+      "NBA:G": ({ ast, to, tsPct, usgPct = 25, ppg = 20 }) => {
+        const astTo  = normalize(ast / Math.max(0.5, to), 1.0, 4.0);
+        const ts     = normalize(tsPct, 0.50, 0.65);
+        const usg    = normalize(usgPct, 18, 35);
+        const points = normalize(ppg, 8, 32);
+        return weighted([
+          [astTo,  0.35],
+          [ts,     0.30],
+          [usg,    0.20],
+          [points, 0.15],
+        ]);
+      },
+      // Football / Quarterback — Passer Rating + TD/INT + YPA
+      "NFL:QB": ({ passerRating, tdToInt, ypa }) => {
+        const rating   = normalize(passerRating, 70, 115);
+        const td       = normalize(tdToInt, 1.5, 5.0);
+        const ypaScore = normalize(ypa, 6.0, 9.0);
+        return weighted([
+          [rating,   0.45],
+          [td,       0.30],
+          [ypaScore, 0.25],
+        ]);
+      },
+    };
+
+    function calculatePerformance(sport, position, stats) {
+      const calc = PERFORMANCE_CALCULATORS[`${sport}:${position}`];
+      if (!calc) throw new Error(`No calculator for ${sport}/${position}`);
+      return calc(stats);
+    }
+    // Expose for console testing.
+    window.calculatePerformance = calculatePerformance;
+
+    /* =========================================================
+       3. THE COUNTER — derived from row-count in the sheet
+       (Optional; SheetDB free tier exposes /count endpoint)
+       ========================================================= */
+    async function loadCount() {
+      if (!SHEETDB_URL || SHEETDB_URL.startsWith("PASTE_")) return 0;
+      const cached = cacheGet(LS_COUNT, COUNT_TTL_MS);
+      if (cached.fresh) return cached.val;
+      try {
+        // SheetDB's /count endpoint returns 0 even when rows exist on this
+        // sheet, so count the rows directly. Cached 1h/visitor to stay under
+        // the request cap; revisit if the list grows to many thousands.
+        const res = await fetch(SHEETDB_URL);
+        if (res.ok) {
+          const data = await res.json();
+          const n = Array.isArray(data) ? data.length : 0;
+          cacheSet(LS_COUNT, n);
+          return n;
+        }
+      } catch (_) { /* offline / cap hit — fall back to last known */ }
+      return cached.val ?? 0;
+    }
+
+    // Below this, a raw number reads as "nobody's here" and HURTS trust.
+    // Show scarcity instead until there's real social proof.
+    const COUNTER_MIN = 150;
+    function renderCounter(count) {
+      document.querySelectorAll("[data-counter]").forEach(el => {
+        if (count < COUNTER_MIN) {
+          el.innerHTML = `<span class="num">Early access</span> — claim your spot before launch`;
+        } else {
+          el.innerHTML = `<span class="num">${count.toLocaleString()}</span> sports fans already on the list`;
+        }
+      });
+    }
+
+    /* ---------- Form submission ---------- */
+
+    /* =========================================================
+       4. THE SUBMISSION HANDLER
+       - Honeypot check (silent reject — bot still "wins" so it
+         doesn't learn to bypass)
+       - Email regex validation client-side
+       - SheetDB POST with single 1.5s retry on 429 / 5xx
+       - Hard error on 4xx, soft retry on 5xx, success on 2xx
+       ========================================================= */
+
+    async function handleSubmit(event) {
+      event.preventDefault();
+      const form = event.currentTarget;
+      const email = form.email.value.trim().toLowerCase();
+      const honeypot = form.elements.b_address?.value || "";
+      const errorEl = form.querySelector("[data-error]");
+      const submitBtn = form.querySelector("button[type=submit]");
+
+      // Honeypot — bots fill every visible field. Real users leave this empty.
+      // Silently show success so bots don't retry with a new strategy.
+      if (honeypot) {
+        showSuccess();
+        return;
+      }
+
+      // Validation
+      if (!EMAIL_REGEX.test(email)) {
+        setError(errorEl, "Enter a valid email.");
+        return;
+      }
+
+      if (!SHEETDB_URL || SHEETDB_URL.startsWith("PASTE_")) {
+        setError(errorEl, "Backend not configured. See SHEETDB setup.");
+        return;
+      }
+
+      setError(errorEl, "");
+      submitBtn.disabled = true;
+      const originalLabel = submitBtn.querySelector(".btn-label")?.textContent || submitBtn.textContent;
+      setBtnLabel(submitBtn, "Locking in…");
+
+      try {
+        await postToSheetDB({
+          email,
+          ref_code: myRefCode(),
+          referred_by: captureReferrer(),
+        });
+        localStorage.setItem(LS_SUBMITTED, email);
+        showSuccess();
+        renderReferral();
+      } catch (err) {
+        console.error("[Topdraft] submit failed:", err);
+        setError(errorEl, "Couldn't connect. Try again?");
+        submitBtn.disabled = false;
+        setBtnLabel(submitBtn, originalLabel);
+      }
+    }
+
+    /**
+     * POST to SheetDB. Retries ONCE after 1.5s on 429 or 5xx.
+     * Throws on 4xx (other than 429) or after the retry fails.
+     */
+    async function postToSheetDB(payload, attempt = 1) {
+      const res = await fetch(SHEETDB_URL, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          data: [{
+            email: payload.email,
+            joined_at: new Date().toISOString(),
+            source: location.hostname || "direct",
+            ref_code: payload.ref_code || "",
+            referred_by: payload.referred_by || "",
+          }],
+        }),
+      });
+
+      if (res.ok) return res.json();
+
+      const isRetryable = res.status === 429 || res.status >= 500;
+      if (attempt === 1 && isRetryable) {
+        await new Promise(r => setTimeout(r, RETRY_DELAY_MS));
+        return postToSheetDB(payload, attempt + 1);
+      }
+      throw new Error(`SheetDB ${res.status}`);
+    }
+
+    /* =========================================================
+       5. THE STATE CHANGE — swap form ↔ success
+       No reload. Pure DOM toggle via the `hidden` attribute.
+       ========================================================= */
+
+    function showSuccess() {
+      document.querySelectorAll("[data-form-slot]").forEach(slot => {
+        slot.hidden = true;
+      });
+      document.querySelectorAll("[data-success-slot]").forEach(slot => {
+        slot.hidden = false;
+      });
+    }
+
+    function setError(el, msg) {
+      if (!el) return;
+      el.textContent = msg;
+      el.hidden = !msg;
+    }
+
+    function setBtnLabel(btn, text) {
+      const label = btn.querySelector(".btn-label");
+      if (label) label.textContent = text;
+      else btn.textContent = text;
+    }
+
+    /* =========================================================
+       6. PAGE INIT
+       ========================================================= */
+    (async function init() {
+      // FAQ
+      document.querySelectorAll(".faq-item .faq-q").forEach(btn => {
+        btn.addEventListener("click", () => {
+          const item = btn.closest(".faq-item");
+          const isOpen = item.getAttribute("aria-expanded") === "true";
+          item.setAttribute("aria-expanded", String(!isOpen));
+        });
+      });
+
+      // Copy the personal referral link from the same success card
+      document.addEventListener("click", (e) => {
+        const btn = e.target.closest("[data-copy]");
+        if (!btn) return;
+        const card = btn.closest(".success-state") || document;
+        const input = card.querySelector("[data-ref-link]");
+        const link = (input && input.value) || refLink(myRefCode());
+        navigator.clipboard.writeText(link).then(() => {
+          btn.textContent = "Copied";
+          setTimeout(() => (btn.textContent = "Copy"), 1500);
+        });
+      });
+
+      // Capture an inbound referral on every visit (even pre-signup)
+      captureReferrer();
+
+      // Returning user — straight to success, with live referral stats
+      if (localStorage.getItem(LS_SUBMITTED)) {
+        showSuccess();
+        renderReferral();
+      }
+
+      // Wire up form submission
+      document.querySelectorAll("form[data-waitlist-form]").forEach(form => {
+        form.addEventListener("submit", handleSubmit);
+      });
+
+      // Counter
+      const count = await loadCount();
+      renderCounter(count);
+    })();
+
+    /* ---------- Athlete cycler (both trade cards) ---------- */
+    const ATHLETES = [
+      { initials: "PM", name: "Patrick Mahomes", sub: "NFL · QB · KC", basePrice: 482.80,
+        events: [
+          { label: "TD PASS · 38yd", pct: 5.2 },
+          { label: "RUSH 1ST DOWN", pct: 1.1 },
+          { label: "INC · 3rd & 8",  pct: -0.4 },
+        ]
+      },
+      { initials: "LJ", name: "LeBron James", sub: "NBA · F · LAL", basePrice: 447.60,
+        events: [
+          { label: "FASTBREAK DUNK", pct: 3.4 },
+          { label: "AST · CORNER 3", pct: 1.8 },
+          { label: "TURNOVER",       pct: -1.2 },
+        ]
+      },
+      { initials: "EH", name: "Erling Haaland", sub: "SOCCER · FW · MCI", basePrice: 502.40,
+        events: [
+          { label: "GOAL · 78'",    pct: 8.0 },
+          { label: "ASSIST · 84'",  pct: 3.0 },
+          { label: "OFFSIDE",       pct: -0.6 },
+        ]
+      },
+    ];
+    const TICK_MS = 2500;
+    const prefersReducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+    // Smoothly count a number element from -> to.
+    function animateNumber(el, from, to, dur) {
+      if (prefersReducedMotion || from === to) { el.textContent = to.toFixed(2); return; }
+      const start = performance.now();
+      let done = false;
+      function frame(now) {
+        if (done) return;
+        const t = Math.min(1, (now - start) / dur);
+        const eased = 1 - Math.pow(1 - t, 3); // easeOutCubic
+        el.textContent = (from + (to - from) * eased).toFixed(2);
+        if (t < 1) requestAnimationFrame(frame);
+        else done = true;
+      }
+      requestAnimationFrame(frame);
+      // Safety net: if rAF is throttled (backgrounded tab), still land on the final value.
+      setTimeout(() => { if (!done) { done = true; el.textContent = to.toFixed(2); } }, dur + 80);
+    }
+
+    // Brief green/red tint on the price the instant it moves.
+    function flashPrice(el, up) {
+      el.classList.remove("flash-up", "flash-down");
+      void el.offsetWidth; // restart the transition
+      el.classList.add(up ? "flash-up" : "flash-down");
+      setTimeout(() => el.classList.remove("flash-up", "flash-down"), 550);
+    }
+
+    // Events: already-fired = dim, the one that just hit = highlighted + slides in.
+    function renderEvents(host, athlete, liveIdx) {
+      host.innerHTML = athlete.events.map((e, i) => {
+        const state = i < liveIdx ? "done" : (i === liveIdx ? "live" : "pending");
+        return `<div class="row ${state}">
+          <span class="what">${e.label}</span>
+          <span class="pct ${e.pct >= 0 ? "up" : "down"}">${e.pct >= 0 ? "+" : ""}${e.pct.toFixed(1)}%</span>
+        </div>`;
+      }).join("");
+    }
+
+    (function startCycler() {
+      const cards = document.querySelectorAll(".trade-mock");
+      if (!cards.length) return;
+
+      let aIdx = 0;
+      let eIdx = 0;
+      // Start already mid-action (first event applied) — no dead 0.0% frame.
+      let price = ATHLETES[0].basePrice * (1 + ATHLETES[0].events[0].pct / 100);
+
+      function paint(animated) {
+        const a = ATHLETES[aIdx];
+        const ev = a.events[eIdx];
+        const positive = ev.pct >= 0;
+        cards.forEach(card => {
+          card.querySelector("[data-initials]").textContent = a.initials;
+          card.querySelector("[data-name]").textContent = a.name;
+          card.querySelector("[data-sub]").textContent = a.sub;
+          const pill = card.querySelector("[data-pill]");
+          pill.className = "change-pill " + (positive ? "up" : "down");
+          pill.querySelector("[data-pct]").textContent =
+            (positive ? "+" : "") + ev.pct.toFixed(1) + "%";
+          renderEvents(card.querySelector("[data-event-list]"), a, eIdx);
+          const priceEl = card.querySelector("[data-price]");
+          const from = parseFloat(priceEl.textContent) || price;
+          if (animated) {
+            animateNumber(priceEl, from, price, 650);
+            flashPrice(priceEl, positive);
+          } else {
+            priceEl.textContent = price.toFixed(2);
+          }
+        });
+      }
+
+      paint(false);
+      setInterval(() => {
+        const a = ATHLETES[aIdx];
+        eIdx++;
+        if (eIdx >= a.events.length) {
+          aIdx = (aIdx + 1) % ATHLETES.length;
+          eIdx = 0;
+          price = ATHLETES[aIdx].basePrice * (1 + ATHLETES[aIdx].events[0].pct / 100);
+        } else {
+          price = price * (1 + a.events[eIdx].pct / 100);
+        }
+        paint(true);
+      }, TICK_MS);
+    })();
+  </script>
+</body>
+</html>

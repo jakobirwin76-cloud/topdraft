@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Topdraft PFP — screenshot this</title>
+  <style>
+    html, body { margin: 0; padding: 0; background: #18181b; min-height: 100vh; }
+    body {
+      display: flex; align-items: center; justify-content: center;
+      font-family: -apple-system, BlinkMacSystemFont, sans-serif;
+      padding: 40px 20px;
+      flex-direction: column; gap: 24px;
+    }
+    .stage {
+      width: 512px; height: 512px;
+      border-radius: 50%;
+      overflow: hidden;
+      box-shadow: 0 20px 60px rgba(0,0,0,0.5);
+    }
+    .stage img { width: 100%; height: 100%; display: block; }
+    .stage.square { border-radius: 0; }
+    .row { display: flex; gap: 32px; align-items: center; }
+    .row .label {
+      font-size: 12px; text-transform: uppercase;
+      letter-spacing: 0.1em; color: #a1a1aa; text-align: center;
+    }
+    .stack { display: flex; flex-direction: column; align-items: center; gap: 12px; }
+    .stage-sm { width: 200px; height: 200px; }
+    .help {
+      color: #a1a1aa; font-size: 13px; max-width: 540px;
+      text-align: center; line-height: 1.6;
+      background: #27272a; padding: 16px 20px; border-radius: 8px;
+      margin-top: 16px;
+    }
+    .help code { font-family: ui-monospace, monospace; background: #18181b; padding: 2px 6px; border-radius: 4px; }
+  </style>
+</head>
+<body>
+  <div class="row">
+    <div class="stack">
+      <div class="stage stage-sm">
+        <img src="pfp.svg" alt="Topdraft PFP — circle crop preview" />
+      </div>
+      <div class="label">Circle (TikTok / IG)</div>
+    </div>
+    <div class="stack">
+      <div class="stage stage-sm square">
+        <img src="pfp.svg" alt="Topdraft PFP — square original" />
+      </div>
+      <div class="label">Square (raw)</div>
+    </div>
+  </div>
+
+  <div class="stage">
+    <img src="pfp.svg" alt="Topdraft PFP — large preview" />
+  </div>
+
+  <div class="help">
+    To save as PNG: <strong>right-click the large circle above → "Save image as…"</strong> — or open
+    <code>pfp.svg</code> directly in Safari, screenshot at <strong>⌘+Shift+4</strong>,
+    drag a square selection over the canvas.<br/>
+    Optimal upload size: <strong>1080×1080 px</strong>.
+  </div>
+</body>
+</html>
