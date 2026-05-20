@@ -1,6 +1,6 @@
-# AthleteX
+# Topdraft
 
-> Skill-based fantasy sports trading. Build a virtual portfolio of athletes, trade on every play, climb the leaderboard.
+> Skill-based fantasy sports game. Build a roster of NBA athletes with play credits, watch prices move on every play, climb the leaderboard.
 
 **Stack:** Next.js 15 (App Router) · TypeScript strict · Supabase (Postgres + Auth + RLS) · Zod · Tailwind v4 · Upstash Redis (rate limit) · Stripe (web subs) · Vitest + Playwright.
 
@@ -23,6 +23,8 @@ cp .env.example .env.local
 #      supabase/migrations/0001_schema.sql
 #      supabase/migrations/0002_rls.sql
 #      supabase/migrations/0003_functions.sql
+#      supabase/migrations/0004_waitlist.sql
+#      supabase/migrations/0005_performance_index.sql
 #      supabase/seed.sql                     (optional dev data)
 
 # 4. Run
