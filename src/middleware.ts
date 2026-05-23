@@ -15,27 +15,33 @@ import { createServerClient, type CookieOptions } from "@supabase/ssr";
 export async function middleware(request: NextRequest) {
   let response = NextResponse.next({ request });
 
-  const supabase = createServerClient(
-    process.env.NEXT_PUBLIC_SUPABASE_URL ?? "",
-    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY ?? "",
-    {
-      cookies: {
-        getAll: () => request.cookies.getAll(),
-        setAll: (toSet: { name: string; value: string; options?: CookieOptions }[]) => {
-          for (const { name, value } of toSet) {
-            request.cookies.set(name, value);
-          }
-          response = NextResponse.next({ request });
-          for (const { name, value, options } of toSet) {
-            response.cookies.set(name, value, options);
-          }
-        },
-      },
-    },
-  );
+  // Gracefully skip Supabase session refresh when env vars are not configured
+  // (e.g. preview deployments that haven't had secrets injected yet).
+  const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
+  const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
 
-  // Refreshes the session if needed and propagates the cookies onto `response`.
-  await supabase.auth.getUser();
+  if (supabaseUrl && supabaseAnonKey) {
+    try {
+      const supabase = createServerClient(supabaseUrl, supabaseAnonKey, {
+        cookies: {
+          getAll: () => request.cookies.getAll(),
+          setAll: (toSet: { name: string; value: string; options?: CookieOptions }[]) => {
+            for (const { name, value } of toSet) {
+              request.cookies.set(name, value);
+            }
+            response = NextResponse.next({ request });
+            for (const { name, value, options } of toSet) {
+              response.cookies.set(name, value, options);
+            }
+          },
+        },
+      });
+      // Refreshes the session if needed and propagates the cookies onto `response`.
+      await supabase.auth.getUser();
+    } catch {
+      // Fail open — a session refresh error should not block the request.
+    }
+  }
 
   // Coarse backstop on /api/* — 240 req/min per IP. Per-route limiters apply
   // tighter quotas inside each handler.

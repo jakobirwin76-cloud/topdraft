@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import {
   LineChart,
   Line,
@@ -178,11 +178,68 @@ function EdgeBadge({ label, color }: { label: string; color: string }) {
   );
 }
 
+// ── Skeleton helpers ──────────────────────────────────────────────────────────
+
+function SkelBone({ w = "100%", h = 14, r = 6, style = {} }: { w?: number | string; h?: number | string; r?: number; style?: React.CSSProperties }) {
+  return (
+    <div style={{
+      width: w, height: h, borderRadius: r, flexShrink: 0,
+      background: "linear-gradient(90deg,rgba(255,255,255,0.00) 0%,rgba(255,255,255,0.06) 40%,rgba(255,255,255,0.00) 100%)",
+      backgroundSize: "400px 100%",
+      animation: "skel-shimmer 1.6s ease-in-out infinite",
+      ...style,
+    }} />
+  );
+}
+
+function ChartSkeleton() {
+  return (
+    <>
+      <style>{`@keyframes skel-shimmer{0%{background-position:-400px 0}100%{background-position:400px 0}}`}</style>
+      <div style={{ background: "var(--color-surface,#131318)", border: "1px solid rgba(255,255,255,0.08)", borderRadius: 12, padding: "32px 16px 24px", marginBottom: 40 }}>
+        {/* Legend row */}
+        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", paddingInline: 16, marginBottom: 24 }}>
+          <SkelBone w={160} h={11} />
+          <div style={{ display: "flex", gap: 16 }}>
+            <SkelBone w={52} h={11} />
+            <SkelBone w={40} h={11} />
+          </div>
+        </div>
+        {/* Chart body */}
+        <div style={{ display: "flex", gap: 12, height: 360 }}>
+          {/* Y axis */}
+          <div style={{ display: "flex", flexDirection: "column", justifyContent: "space-between", paddingBottom: 24, width: 40 }}>
+            {[0,1,2,3,4,5].map((i) => <SkelBone key={i} w={36} h={10} />)}
+          </div>
+          {/* Plot area */}
+          <div style={{ flex: 1, position: "relative", borderRadius: 6, overflow: "hidden" }}>
+            <SkelBone w="100%" h="100%" r={6} style={{ position: "absolute", inset: 0 }} />
+            <svg style={{ position: "absolute", inset: 0, width: "100%", height: "100%" }} preserveAspectRatio="none">
+              <polyline points="0,320 60,260 120,200 180,150 240,100 300,70 360,95 420,130 480,175 540,220 600,270"
+                fill="none" stroke="rgba(59,130,246,0.25)" strokeWidth="2.5" />
+              <polyline points="0,330 60,285 120,240 180,195 240,155 300,110 360,75 420,110 480,155 540,210 600,270"
+                fill="none" stroke="rgba(239,68,68,0.20)" strokeWidth="2.5" />
+            </svg>
+          </div>
+        </div>
+        {/* X axis */}
+        <div style={{ display: "flex", justifyContent: "space-between", marginTop: 8, paddingLeft: 52 }}>
+          {Array.from({ length: 9 }).map((_, i) => <SkelBone key={i} w={24} h={9} />)}
+        </div>
+        {/* Caption */}
+        <SkelBone w={300} h={10} style={{ margin: "16px auto 0" }} />
+      </div>
+    </>
+  );
+}
+
 // ── Page ──────────────────────────────────────────────────────────────────────
 
 export default function MessiVsRonaldo() {
   const [metric, setMetric] = useState<Metric>("goals");
   const [compPlayer, setCompPlayer] = useState<"messi" | "ronaldo">("messi");
+  const [mounted, setMounted] = useState(false);
+  useEffect(() => { setMounted(true); }, []);
 
   const lineData = metric !== "comp" ? mergeForChart(metric) : [];
   const compData = mergeForCompChart(compPlayer);
@@ -301,7 +358,10 @@ export default function MessiVsRonaldo() {
       </div>
 
       {/* ── Chart card ───────────────────────────────────────────────────────── */}
-      <div style={{ background: "var(--color-surface,#131318)", border: "1px solid rgba(255,255,255,0.08)", borderRadius: 12, padding: "32px 16px 24px", marginBottom: 40 }}>
+      {!mounted ? (
+        <ChartSkeleton />
+      ) : null}
+      <div style={{ background: "var(--color-surface,#131318)", border: "1px solid rgba(255,255,255,0.08)", borderRadius: 12, padding: "32px 16px 24px", marginBottom: 40, display: mounted ? undefined : "none" }}>
 
         {metric !== "comp" ? (
           /* Line chart — Goals / Assists / Share Price */
