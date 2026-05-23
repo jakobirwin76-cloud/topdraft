@@ -42,6 +42,14 @@ Only tag things that are genuinely blocking forward progress. Don't tag cosmetic
 
 <!-- Newest entry at the top. One entry per agent run. -->
 
+### Day 3 — 2026-05-21
+- Objective: email signup + login pages, AuthProvider, app shell auth guard
+- Done: NOTHING — blocked by unresolved Day 1/2 blockers
+- [BLOCKER] Migrations 0001–0005 not applied in Supabase — blocks signup API, all DB reads/writes — who can fix: human
+- [BLOCKER] `SUPABASE_SERVICE_ROLE_KEY` missing from `.env.local` — blocks signup API and any admin routes — who can fix: human
+- Day 3 BLOCKED — resolve Day 1/2 blockers first.
+- Next objective (Day 3, retry): Once migrations are applied and service role key is set, build auth-provider.tsx, login page, signup page, app shell auth guard, and stub home page.
+
 ### Day 1 — 2026-05-20 (automated check)
 - Objective: env running, Supabase project live, confirm scaffold builds
 - Done: Scaffold healthy. `npm run typecheck` passes. Real Supabase URL wired (`lqibnpapcikqfpnpsxmv.supabase.co`). Dev server confirmed running on port 3000.

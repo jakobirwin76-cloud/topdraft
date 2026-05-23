@@ -130,6 +130,47 @@ export default async function LandingPage() {
         </div>
       </section>
 
+      {/* ─────────── ATHLETE COMPARE CTA ─────────── */}
+      <section className="border-t border-border">
+        <div className="px-5 md:px-12 py-16 md:py-20 max-w-6xl mx-auto">
+          <ScrollReveal>
+            <div className="relative overflow-hidden border border-border bg-surface rounded-xl p-8 md:p-12 flex flex-col md:flex-row items-start md:items-center gap-8 md:gap-16 hover:bg-surface-2 transition-base group">
+              {/* Ambient glow */}
+              <div
+                aria-hidden="true"
+                style={{
+                  position: "absolute",
+                  inset: 0,
+                  background:
+                    "radial-gradient(ellipse 60% 80% at 0% 50%, rgba(109,40,217,0.10), transparent 70%)",
+                  pointerEvents: "none",
+                }}
+              />
+              <div className="flex-1 relative">
+                <div className={`${LABEL} mb-4`}>Featured · Athlete Compare</div>
+                <h3 className="font-display text-3xl md:text-5xl leading-[1.05] tracking-[-0.01em] mb-3">
+                  <span style={{ color: "#60a5fa" }}>MESSI</span>
+                  <span className="text-text-dim mx-3 font-normal">vs</span>
+                  <span style={{ color: "#f87171" }}>RONALDO</span>
+                </h3>
+                <p className="text-sm text-text-mute max-w-sm leading-relaxed">
+                  Full career · 2002–2026 · See how their Topdraft share prices would have moved across every season — powered by the AMM engine.
+                </p>
+              </div>
+              <Link
+                href="/athletes/messi-vs-ronaldo"
+                className="relative shrink-0 inline-flex items-center gap-2 bg-accent hover:bg-accent-2 text-white text-sm font-medium uppercase tracking-[0.06em] px-6 py-3 rounded-lg transition-base"
+              >
+                View Comparison
+                <svg width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden="true">
+                  <path d="M2.5 7h9M7.5 3l4 4-4 4" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+                </svg>
+              </Link>
+            </div>
+          </ScrollReveal>
+        </div>
+      </section>
+
       {/* ─────────── LIVE DEMO ─────────── */}
       <section className="border-t border-b border-border">
         <div className="px-5 md:px-12 py-24 md:py-32 max-w-2xl mx-auto">

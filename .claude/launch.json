@@ -2,6 +2,12 @@
   "version": "0.0.1",
   "configurations": [
     {
+      "name": "topdraft-dev",
+      "runtimeExecutable": "npm",
+      "runtimeArgs": ["run", "dev"],
+      "port": 3000
+    },
+    {
       "name": "topdraft-static",
       "runtimeExecutable": "npx",
       "runtimeArgs": ["-y", "serve", "-l", "4173", "."],
