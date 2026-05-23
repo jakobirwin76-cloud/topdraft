@@ -18,7 +18,7 @@ export async function middleware(request: NextRequest) {
   // Gracefully skip Supabase session refresh when env vars are not configured
   // (e.g. preview deployments that haven't had secrets injected yet).
   const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
-  const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
+  const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY;
 
   if (supabaseUrl && supabaseAnonKey) {
     try {
