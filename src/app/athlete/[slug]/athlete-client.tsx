@@ -74,6 +74,7 @@ export default function AthletePageClient({ athlete }: { athlete: Athlete }) {
   // Unrealized P&L = paper gain on shares still held.
   // Session total = realized + unrealized.
   const [realizedPnl, setRealizedPnl] = useState(0);
+  const [tradeCount, setTradeCount] = useState(0);
   const [feed, setFeed] = useState<FeedEntry[]>([]);
   // Ref-mirror of holdings so trade handler reads fresh values without stale closures.
   const holdingsRef = useRef(holdings);
@@ -102,6 +103,7 @@ export default function AthletePageClient({ athlete }: { athlete: Athlete }) {
     setPrice({ basePrice: athlete.basePrice, currentPrice: athlete.initialPrice });
     setHoldings({ shares: 0, avgCost: 0 });
     setRealizedPnl(0);
+    setTradeCount(0);
     setFeed([]);
     const ts = Date.now();
     setSessionHistory(generateSessionSeed(athlete, ts));
@@ -167,6 +169,7 @@ export default function AthletePageClient({ athlete }: { athlete: Athlete }) {
     const tradePrice = side === "buy" ? next.currentPrice : prev.currentPrice;
 
     setPrice(next);
+    setTradeCount((c) => c + 1);
 
     if (side === "sell") {
       // Lock in realized profit on this sell using the avg cost basis.
@@ -257,7 +260,139 @@ export default function AthletePageClient({ athlete }: { athlete: Athlete }) {
           </aside>
         </div>
       </main>
+
+      <StickyWaitlistBar tradeCount={tradeCount} />
     </div>
+  );
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+//  STICKY WAITLIST BAR — slides up after 30s OR on first trade
+// ─────────────────────────────────────────────────────────────────────────────
+function StickyWaitlistBar({ tradeCount }: { tradeCount: number }) {
+  const [visible, setVisible] = useState(false);
+  const [dismissed, setDismissed] = useState(false);
+
+  // Check dismissed flag once on mount
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+    const raw = window.localStorage.getItem("tpd_waitlist_dismissed");
+    if (raw) {
+      const at = Number(raw);
+      const WEEK = 7 * 24 * 60 * 60 * 1000;
+      if (Number.isFinite(at) && Date.now() - at < WEEK) {
+        setDismissed(true);
+      }
+    }
+  }, []);
+
+  // Auto-show after 30s
+  useEffect(() => {
+    if (dismissed) return;
+    const t = setTimeout(() => setVisible(true), 30_000);
+    return () => clearTimeout(t);
+  }, [dismissed]);
+
+  // Show immediately on first trade
+  useEffect(() => {
+    if (tradeCount > 0 && !dismissed) setVisible(true);
+  }, [tradeCount, dismissed]);
+
+  function handleClose() {
+    if (typeof window !== "undefined") {
+      window.localStorage.setItem("tpd_waitlist_dismissed", String(Date.now()));
+    }
+    setVisible(false);
+    setDismissed(true);
+  }
+
+  return (
+    <AnimatePresence>
+      {visible && !dismissed && (
+        <motion.div
+          initial={{ y: 100, opacity: 0 }}
+          animate={{ y: 0, opacity: 1 }}
+          exit={{ y: 100, opacity: 0 }}
+          transition={{ type: "spring", stiffness: 280, damping: 30 }}
+          className="fixed bottom-4 left-4 right-4 md:left-auto md:right-6 md:bottom-6 md:max-w-md z-50"
+          style={{
+            background: "rgba(9, 9, 11, 0.92)",
+            backdropFilter: "blur(16px) saturate(140%)",
+            WebkitBackdropFilter: "blur(16px) saturate(140%)",
+            border: `1px solid ${tokens.borderBright}`,
+            borderRadius: 16,
+            boxShadow: `0 16px 48px rgba(0,0,0,0.6), 0 0 0 1px ${tokens.accent}22 inset, 0 0 32px ${tokens.accent}22`,
+            padding: 20,
+          }}
+        >
+          <div className="flex items-start gap-4">
+            <div className="flex-1 min-w-0">
+              <div
+                className="text-[10px] uppercase tracking-[0.22em] mb-2"
+                style={{ color: tokens.winText, fontFamily: FONT_MONO }}
+              >
+                ● First 1,000 only
+              </div>
+              <div
+                style={{
+                  fontFamily: FONT_DISPLAY,
+                  fontWeight: 700,
+                  fontSize: 17,
+                  letterSpacing: "-0.02em",
+                  color: tokens.text,
+                  lineHeight: 1.25,
+                  marginBottom: 4,
+                }}
+              >
+                Like trading? Lock in a Founder badge.
+              </div>
+              <p
+                className="mb-4"
+                style={{ fontSize: 12, color: tokens.textMute, lineHeight: 1.5 }}
+              >
+                Top 1,000 on the waitlist get permanent in-app status + first access at launch.
+              </p>
+              <Link
+                href="/#waitlist"
+                onClick={handleClose}
+                className="inline-flex items-center gap-2 px-4 py-2.5 rounded-lg w-full justify-center"
+                style={{
+                  background: `linear-gradient(180deg, ${tokens.accent} 0%, ${tokens.accentDeep} 100%)`,
+                  color: "#fff",
+                  fontFamily: FONT_DISPLAY,
+                  fontWeight: 600,
+                  fontSize: 13,
+                  letterSpacing: "0.02em",
+                  boxShadow: `0 0 20px ${tokens.accent}55`,
+                }}
+              >
+                Join the waitlist →
+              </Link>
+            </div>
+            <button
+              type="button"
+              onClick={handleClose}
+              aria-label="Dismiss"
+              className="shrink-0 h-7 w-7 rounded-md flex items-center justify-center transition-colors"
+              style={{
+                border: `1px solid ${tokens.border}`,
+                color: tokens.textMute,
+                background: "transparent",
+              }}
+            >
+              <svg width="12" height="12" viewBox="0 0 12 12" fill="none" aria-hidden="true">
+                <path
+                  d="M2 2L10 10M10 2L2 10"
+                  stroke="currentColor"
+                  strokeWidth="1.5"
+                  strokeLinecap="round"
+                />
+              </svg>
+            </button>
+          </div>
+        </motion.div>
+      )}
+    </AnimatePresence>
   );
 }
 
