@@ -6,10 +6,12 @@
  * template renders Mahomes, Messi, LeBron, anyone.
  */
 
+import Link from "next/link";
 import { useEffect, useRef, useState, useMemo } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { applyTrade, applyStatEvent, type PriceState } from "@/lib/pricing/amm";
 import {
+  ATHLETES,
   type Athlete,
   type Frame,
   type HistoryPoint,
@@ -120,7 +122,7 @@ export default function AthletePageClient({ athlete }: { athlete: Athlete }) {
     function fire() {
       const ev = pickEventFromPool(pool);
       const prev = priceRef.current;
-      const multiplier = computeMultiplier(ev, athlete.positionWeight, athlete.competitionModifier);
+      const multiplier = computeMultiplier(ev);
       const next = applyStatEvent(prev, multiplier);
       priceRef.current = next;
 
@@ -212,6 +214,7 @@ export default function AthletePageClient({ athlete }: { athlete: Athlete }) {
     >
       <RadialBackgrounds />
       <MarqueeTicker />
+      <AthletePicker currentSlug={athlete.slug} />
 
       <main className="relative z-10 mx-auto max-w-[1600px] px-6 pt-6 pb-12">
         <div className="grid grid-cols-12 gap-6">
@@ -330,6 +333,85 @@ function MarqueeTicker() {
           .animate-marquee { animation: none; }
         }
       `}</style>
+    </div>
+  );
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+//  ATHLETE PICKER — clickable bar of all athletes, current one highlighted
+// ─────────────────────────────────────────────────────────────────────────────
+function AthletePicker({ currentSlug }: { currentSlug: string }) {
+  const all = Object.values(ATHLETES);
+  return (
+    <div
+      className="relative z-10 border-b"
+      style={{
+        background: "rgba(9, 9, 11, 0.6)",
+        backdropFilter: "blur(12px)",
+        WebkitBackdropFilter: "blur(12px)",
+        borderColor: tokens.border,
+      }}
+    >
+      <div className="mx-auto max-w-[1600px] px-6 py-3">
+        <div className="flex items-center gap-3 overflow-x-auto" style={{ scrollbarWidth: "none" }}>
+          <span
+            className="text-[10px] uppercase tracking-[0.22em] shrink-0 pr-2 border-r"
+            style={{ color: tokens.textDim, fontFamily: FONT_MONO, borderColor: tokens.border }}
+          >
+            Switch athlete
+          </span>
+          {all.map((a) => {
+            const active = a.slug === currentSlug;
+            return (
+              <Link
+                key={a.slug}
+                href={`/athlete/${a.slug}`}
+                className="shrink-0 flex items-center gap-2.5 px-3 py-1.5 rounded-md transition-all"
+                style={{
+                  background: active ? tokens.glass2 : "transparent",
+                  border: `1px solid ${active ? tokens.accent : tokens.border}`,
+                  boxShadow: active ? `0 0 16px ${tokens.accent}55, inset 0 0 0 1px ${tokens.accent}33` : "none",
+                }}
+              >
+                <span
+                  className="h-6 w-6 rounded-full flex items-center justify-center text-[9px] font-bold shrink-0"
+                  style={{
+                    background: `linear-gradient(135deg, ${tokens.accent} 0%, ${tokens.accentDeep} 100%)`,
+                    color: "#fff",
+                    fontFamily: FONT_DISPLAY,
+                    letterSpacing: "-0.02em",
+                    boxShadow: active ? `0 0 12px ${tokens.accent}66` : "none",
+                  }}
+                >
+                  {a.initials}
+                </span>
+                <span
+                  style={{
+                    fontFamily: FONT_DISPLAY,
+                    fontSize: 12,
+                    fontWeight: 600,
+                    color: active ? tokens.text : tokens.textMute,
+                    letterSpacing: "-0.01em",
+                  }}
+                >
+                  {a.name.split(" ").pop()}
+                </span>
+                <span
+                  className="hidden sm:inline"
+                  style={{
+                    fontFamily: FONT_MONO,
+                    fontSize: 9,
+                    letterSpacing: "0.16em",
+                    color: tokens.textDim,
+                  }}
+                >
+                  {a.sport}
+                </span>
+              </Link>
+            );
+          })}
+        </div>
+      </div>
     </div>
   );
 }
@@ -496,10 +578,13 @@ function PriceChart({
 
   const innerW = W - padding.left - padding.right;
   const innerH = H - padding.top - padding.bottom;
-  const stepX = innerW / Math.max(1, history.length - 1);
 
-  const points = history.map((h, i) => ({
-    x: padding.left + i * stepX,
+  // X-axis is TRUE time. Each point's horizontal position reflects when it
+  // happened. Quiet periods → flat stretches. Bursts → tighter clusters.
+  const tRange = Math.max(1, tMax - tMin);
+
+  const points = history.map((h) => ({
+    x: padding.left + ((h.t - tMin) / tRange) * innerW,
     y: padding.top + innerH - ((h.p - yLo) / yRange) * innerH,
     t: h.t,
     p: h.p,
@@ -610,7 +695,11 @@ function PriceChart({
 
           {hoverPoint && (
             <g style={{ pointerEvents: "none" }}>
+              {/* Vertical crosshair */}
               <line x1={hoverPoint.x} y1={padding.top} x2={hoverPoint.x} y2={H - padding.bottom} stroke={tokens.borderBright} strokeDasharray="3 3" strokeWidth="1" opacity="0.7" />
+              {/* Horizontal crosshair */}
+              <line x1={padding.left} y1={hoverPoint.y} x2={W - padding.right} y2={hoverPoint.y} stroke={tokens.borderBright} strokeDasharray="3 3" strokeWidth="1" opacity="0.5" />
+              {/* Snap dot */}
               <circle cx={hoverPoint.x} cy={hoverPoint.y} r="5" fill={color} stroke="#09090B" strokeWidth="2" />
             </g>
           )}

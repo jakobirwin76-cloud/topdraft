@@ -12,11 +12,8 @@ export interface Athlete {
   slug: string;
   sport: Sport;
   league: string;
+  /** Pool selector — see SPORT_POSITION_MATRIX in event-pools.ts */
   position: string;
-  /** Position-specific event impact multiplier. NFL QB=0.55, WR=1.0, NBA=1.0, etc. */
-  positionWeight: number;
-  /** League quality modifier — Premier League/UCL=1.0+, MLS=0.7, friendly=0.3. */
-  competitionModifier: number;
   name: string;
   initials: string;
   team: string;
@@ -26,53 +23,141 @@ export interface Athlete {
 }
 
 export const ATHLETES: Record<string, Athlete> = {
+  // ── NFL ────────────────────────────────────────────────────────────
   mahomes: {
     slug: "mahomes",
-    sport: "NFL", league: "NFL",
-    position: "QB", positionWeight: 0.55, competitionModifier: 1.0,
+    sport: "NFL", league: "NFL", position: "QB",
     name: "Patrick Mahomes", initials: "PM",
     team: "Kansas City Chiefs", teamCode: "KC",
     basePrice: 14, initialPrice: 20.1,
   },
   allen: {
     slug: "allen",
-    sport: "NFL", league: "NFL",
-    position: "QB", positionWeight: 0.55, competitionModifier: 1.0,
+    sport: "NFL", league: "NFL", position: "QB",
     name: "Josh Allen", initials: "JA",
     team: "Buffalo Bills", teamCode: "BUF",
     basePrice: 12, initialPrice: 14.5,
   },
+  jefferson: {
+    slug: "jefferson",
+    sport: "NFL", league: "NFL", position: "WR",
+    name: "Justin Jefferson", initials: "JJ",
+    team: "Minnesota Vikings", teamCode: "MIN",
+    basePrice: 15, initialPrice: 18.5,
+  },
+  mccaffrey: {
+    slug: "mccaffrey",
+    sport: "NFL", league: "NFL", position: "RB",
+    name: "Christian McCaffrey", initials: "CM",
+    team: "San Francisco 49ers", teamCode: "SF",
+    basePrice: 13, initialPrice: 16.7,
+  },
+  sewell: {
+    slug: "sewell",
+    sport: "NFL", league: "NFL", position: "OL",
+    name: "Penei Sewell", initials: "PS",
+    team: "Detroit Lions", teamCode: "DET",
+    basePrice: 7, initialPrice: 8.2,
+  },
+  garrett: {
+    slug: "garrett",
+    sport: "NFL", league: "NFL", position: "DL",
+    name: "Myles Garrett", initials: "MG",
+    team: "Cleveland Browns", teamCode: "CLE",
+    basePrice: 10, initialPrice: 13.1,
+  },
+  gardner: {
+    slug: "gardner",
+    sport: "NFL", league: "NFL", position: "CB",
+    name: "Sauce Gardner", initials: "SG",
+    team: "New York Jets", teamCode: "NYJ",
+    basePrice: 9, initialPrice: 11.3,
+  },
+  hamilton: {
+    slug: "hamilton",
+    sport: "NFL", league: "NFL", position: "S",
+    name: "Kyle Hamilton", initials: "KH",
+    team: "Baltimore Ravens", teamCode: "BAL",
+    basePrice: 8, initialPrice: 9.8,
+  },
+  // ── SOCCER ─────────────────────────────────────────────────────────
   haaland: {
     slug: "haaland",
-    sport: "SOCCER", league: "Premier League",
-    position: "ST", positionWeight: 1.0, competitionModifier: 1.0,
+    sport: "SOCCER", league: "Premier League", position: "ST",
     name: "Erling Haaland", initials: "EH",
     team: "Manchester City", teamCode: "MCI",
     basePrice: 18, initialPrice: 22.31,
   },
   messi: {
     slug: "messi",
-    sport: "SOCCER", league: "MLS",
-    position: "RW", positionWeight: 1.0, competitionModifier: 0.7,
+    sport: "SOCCER", league: "MLS", position: "RW",
     name: "Lionel Messi", initials: "LM",
     team: "Inter Miami", teamCode: "MIA",
     basePrice: 22, initialPrice: 27.45,
   },
+  alisson: {
+    slug: "alisson",
+    sport: "SOCCER", league: "Premier League", position: "GK",
+    name: "Alisson Becker", initials: "AB",
+    team: "Liverpool", teamCode: "LIV",
+    basePrice: 10, initialPrice: 12.4,
+  },
+  vandijk: {
+    slug: "vandijk",
+    sport: "SOCCER", league: "Premier League", position: "DF",
+    name: "Virgil van Dijk", initials: "VD",
+    team: "Liverpool", teamCode: "LIV",
+    basePrice: 8, initialPrice: 9.4,
+  },
+  debruyne: {
+    slug: "debruyne",
+    sport: "SOCCER", league: "Premier League", position: "MF",
+    name: "Kevin De Bruyne", initials: "KB",
+    team: "Manchester City", teamCode: "MCI",
+    basePrice: 12, initialPrice: 15.2,
+  },
+  // ── NBA ────────────────────────────────────────────────────────────
   lebron: {
     slug: "lebron",
-    sport: "NBA", league: "NBA",
-    position: "SF", positionWeight: 1.0, competitionModifier: 1.0,
+    sport: "NBA", league: "NBA", position: "SF",
     name: "LeBron James", initials: "LJ",
     team: "Los Angeles Lakers", teamCode: "LAL",
     basePrice: 13, initialPrice: 16.2,
   },
   curry: {
     slug: "curry",
-    sport: "NBA", league: "NBA",
-    position: "PG", positionWeight: 1.0, competitionModifier: 1.0,
+    sport: "NBA", league: "NBA", position: "PG",
     name: "Stephen Curry", initials: "SC",
     team: "Golden State Warriors", teamCode: "GSW",
     basePrice: 16, initialPrice: 19.99,
+  },
+  embiid: {
+    slug: "embiid",
+    sport: "NBA", league: "NBA", position: "C",
+    name: "Joel Embiid", initials: "JE",
+    team: "Philadelphia 76ers", teamCode: "PHI",
+    basePrice: 17, initialPrice: 20.8,
+  },
+  edwards: {
+    slug: "edwards",
+    sport: "NBA", league: "NBA", position: "SG",
+    name: "Anthony Edwards", initials: "AE",
+    team: "Minnesota Timberwolves", teamCode: "MIN",
+    basePrice: 14, initialPrice: 17.8,
+  },
+  giannis: {
+    slug: "giannis",
+    sport: "NBA", league: "NBA", position: "PF",
+    name: "Giannis Antetokounmpo", initials: "GA",
+    team: "Milwaukee Bucks", teamCode: "MIL",
+    basePrice: 19, initialPrice: 24.5,
+  },
+  jokic: {
+    slug: "jokic",
+    sport: "NBA", league: "NBA", position: "C",
+    name: "Nikola Jokić", initials: "NJ",
+    team: "Denver Nuggets", teamCode: "DEN",
+    basePrice: 18, initialPrice: 22.6,
   },
 };
 

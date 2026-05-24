@@ -479,6 +479,7 @@ Brutal pass on every page:
 
 ## REMINDERS — EVERY SESSION
 
+0. **When the user says "checklist"** → immediately read `docs/CHECKLIST.md` and surface it in the chat. That file holds the active priority list — done items, next up, and anti-patterns to avoid. Update it as items get checked off.
 1. **Read CLAUDE.md** at the start.
 2. **Plan before coding** — always show the plan first.
 3. **One feature at a time** — never jump ahead.

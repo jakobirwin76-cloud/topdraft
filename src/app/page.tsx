@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { Crown, Trophy, Zap } from "lucide-react";
+import { ArrowRight, Crown, Trophy, Zap } from "lucide-react";
 import { WaitlistForm } from "@/components/waitlist-form";
 import { Logo } from "@/components/logo";
 import { AnimatedTradeMock } from "@/components/landing/animated-trade-mock";
@@ -45,8 +45,11 @@ export default async function LandingPage() {
               Waitlist
             </div>
             <h1
-              className="font-display font-extrabold text-[48px] md:text-[96px] leading-[1.05] tracking-[-0.03em] mb-7 md:mb-10 uppercase"
+              className="text-[48px] md:text-[96px] leading-[1.05] mb-7 md:mb-10 uppercase"
               style={{
+                fontFamily: "'Inter Tight', Inter, sans-serif",
+                fontWeight: 800,
+                letterSpacing: "-0.04em",
                 background: "linear-gradient(135deg, #6366F1 0%, #A855F7 45%, #EC4899 100%)",
                 WebkitBackgroundClip: "text",
                 backgroundClip: "text",
@@ -64,6 +67,16 @@ export default async function LandingPage() {
             </p>
             <div className="max-w-md">
               <WaitlistForm />
+              <Link
+                href="/athlete/mahomes"
+                className="mt-4 inline-flex items-center gap-1.5 text-sm text-text-mute hover:text-accent transition-base group"
+              >
+                <span className="text-accent group-hover:text-accent-2">→</span>
+                <span className="underline underline-offset-4 decoration-text-dim group-hover:decoration-accent">
+                  Try the live demo first
+                </span>
+                <ArrowRight className="w-3.5 h-3.5 opacity-0 group-hover:opacity-100 -ml-1 group-hover:ml-0 transition-all" strokeWidth={2.5} />
+              </Link>
             </div>
             <div className="mt-6 text-sm text-text-mute font-data tabular-nums">
               {total > 0 ? (
@@ -202,7 +215,7 @@ export default async function LandingPage() {
       </section>
 
       {/* ─────────── FINAL CTA ─────────── */}
-      <section className="border-t border-border bg-surface/40">
+      <section id="waitlist" className="border-t border-border bg-surface/40 scroll-mt-20">
         <div className="px-5 md:px-12 py-24 md:py-32 max-w-2xl mx-auto text-center">
           <h2 className="font-display font-extrabold text-5xl md:text-7xl leading-[0.95] tracking-[-0.035em] mb-7">
             Your sports IQ
