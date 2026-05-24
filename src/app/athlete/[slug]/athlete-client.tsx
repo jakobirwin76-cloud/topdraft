@@ -10,6 +10,7 @@ import Link from "next/link";
 import { useEffect, useRef, useState, useMemo } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { applyTrade, applyStatEvent, type PriceState } from "@/lib/pricing/amm";
+import { MarqueeTicker } from "@/components/marquee-ticker";
 import {
   ATHLETES,
   type Athlete,
@@ -75,6 +76,10 @@ export default function AthletePageClient({ athlete }: { athlete: Athlete }) {
   // Session total = realized + unrealized.
   const [realizedPnl, setRealizedPnl] = useState(0);
   const [tradeCount, setTradeCount] = useState(0);
+  // Live feed pause/play (terminal control — accessibility + user preference)
+  const [paused, setPaused] = useState(false);
+  const pausedRef = useRef(false);
+  useEffect(() => { pausedRef.current = paused; }, [paused]);
   const [feed, setFeed] = useState<FeedEntry[]>([]);
   // Ref-mirror of holdings so trade handler reads fresh values without stale closures.
   const holdingsRef = useRef(holdings);
@@ -122,6 +127,7 @@ export default function AthletePageClient({ athlete }: { athlete: Athlete }) {
   useEffect(() => {
     const pool = getEventPool(athlete.sport, athlete.position);
     function fire() {
+      if (pausedRef.current) return;
       const ev = pickEventFromPool(pool);
       const prev = priceRef.current;
       const multiplier = computeMultiplier(ev);
@@ -223,6 +229,12 @@ export default function AthletePageClient({ athlete }: { athlete: Athlete }) {
         <div className="grid grid-cols-12 gap-6">
           {/* LEFT — 65% */}
           <section className="col-span-12 lg:col-span-8 space-y-6">
+            <TerminalMetaStrip
+              tickCount={sessionHistory.length}
+              lastUpdate={sessionHistory[sessionHistory.length - 1]?.t ?? now}
+              now={now}
+              paused={paused}
+            />
             <HeroProfile
               athlete={athlete}
               price={price.currentPrice}
@@ -256,7 +268,7 @@ export default function AthletePageClient({ athlete }: { athlete: Athlete }) {
               currentPrice={price.currentPrice}
               realizedPnl={realizedPnl}
             />
-            <LiveFeed feed={feed} now={now} />
+            <LiveFeed feed={feed} now={now} paused={paused} onTogglePause={() => setPaused((p) => !p)} />
           </aside>
         </div>
       </main>
@@ -413,66 +425,6 @@ function RadialBackgrounds() {
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
-//  MARQUEE — static showcase of other athletes (will be DB-driven in prod)
-// ─────────────────────────────────────────────────────────────────────────────
-const TICKER_ROWS = [
-  { name: "Mahomes", price: 20.10, delta: 0.052, spark: [18, 18.4, 19.1, 18.8, 19.6, 20.2, 19.8, 20.1] },
-  { name: "Haaland",  price: 22.31, delta: 0.030, spark: [21.5, 21.8, 22.0, 21.7, 22.2, 22.4, 22.3, 22.3] },
-  { name: "Messi",    price: 27.45, delta: -0.012, spark: [27.9, 27.8, 27.6, 27.7, 27.5, 27.4, 27.5, 27.45] },
-  { name: "LeBron",   price: 16.20, delta: 0.018, spark: [15.8, 15.9, 16.0, 16.1, 16.0, 16.2, 16.1, 16.2] },
-  { name: "Curry",    price: 19.99, delta: -0.024, spark: [20.5, 20.3, 20.1, 20.2, 20.0, 19.9, 20.0, 19.99] },
-  { name: "Allen",    price: 14.50, delta: 0.044, spark: [13.8, 13.9, 14.1, 14.2, 14.3, 14.4, 14.5, 14.5] },
-];
-
-function MarqueeTicker() {
-  const doubled = [...TICKER_ROWS, ...TICKER_ROWS];
-  return (
-    <div
-      className="sticky top-0 z-20 w-full backdrop-blur-md border-b"
-      style={{
-        background: "rgba(9, 9, 11, 0.7)",
-        borderColor: tokens.border,
-        maskImage: "linear-gradient(to right, transparent 0%, black 4%, black 96%, transparent 100%)",
-        WebkitMaskImage: "linear-gradient(to right, transparent 0%, black 4%, black 96%, transparent 100%)",
-      }}
-    >
-      <div className="flex gap-10 py-3 px-6 whitespace-nowrap animate-marquee hover:[animation-play-state:paused]">
-        {doubled.map((it, i) => {
-          const up = it.delta >= 0;
-          return (
-            <div key={`${it.name}-${i}`} className="flex items-center gap-3 shrink-0">
-              <span className="text-[11px] uppercase tracking-[0.14em]" style={{ color: tokens.textMute, fontFamily: FONT_DISPLAY, fontWeight: 500 }}>
-                {it.name}
-              </span>
-              <span style={{ fontFamily: FONT_MONO, fontVariantNumeric: "tabular-nums", color: tokens.text, fontSize: 13 }}>
-                ${it.price.toFixed(2)}
-              </span>
-              <span className="inline-flex items-center gap-0.5" style={{ fontFamily: FONT_MONO, fontSize: 11, fontVariantNumeric: "tabular-nums", color: up ? tokens.winText : tokens.loss }}>
-                {up ? "▲" : "▼"} {up ? "+" : ""}{(it.delta * 100).toFixed(1)}%
-              </span>
-              <MicroSparkline points={it.spark} up={up} />
-            </div>
-          );
-        })}
-      </div>
-      <style jsx>{`
-        @keyframes marquee {
-          from { transform: translateX(0); }
-          to   { transform: translateX(-50%); }
-        }
-        .animate-marquee {
-          animation: marquee 60s linear infinite;
-          will-change: transform;
-        }
-        @media (prefers-reduced-motion: reduce) {
-          .animate-marquee { animation: none; }
-        }
-      `}</style>
-    </div>
-  );
-}
-
-// ─────────────────────────────────────────────────────────────────────────────
 //  ATHLETE PICKER — clickable bar of all athletes, current one highlighted
 // ─────────────────────────────────────────────────────────────────────────────
 function AthletePicker({ currentSlug }: { currentSlug: string }) {
@@ -551,21 +503,58 @@ function AthletePicker({ currentSlug }: { currentSlug: string }) {
   );
 }
 
-function MicroSparkline({ points, up }: { points: number[]; up: boolean }) {
-  const min = Math.min(...points);
-  const max = Math.max(...points);
-  const range = Math.max(0.01, max - min);
-  const W = 48;
-  const H = 14;
-  const step = W / (points.length - 1);
-  const path = points
-    .map((p, i) => `${i === 0 ? "M" : "L"} ${(i * step).toFixed(1)} ${(H - ((p - min) / range) * (H - 2) - 1).toFixed(1)}`)
-    .join(" ");
-  const color = up ? tokens.win : tokens.loss;
+// ─────────────────────────────────────────────────────────────────────────────
+//  TERMINAL META STRIP — Bloomberg-style eyebrow row above the hero
+// ─────────────────────────────────────────────────────────────────────────────
+function TerminalMetaStrip({
+  tickCount,
+  lastUpdate,
+  now,
+  paused,
+}: {
+  tickCount: number;
+  lastUpdate: number;
+  now: number;
+  paused: boolean;
+}) {
+  const secondsAgo = Math.max(0, Math.floor((now - lastUpdate) / 1000));
   return (
-    <svg width={W} height={H} className="shrink-0" aria-hidden="true">
-      <path d={path} fill="none" stroke={color} strokeWidth="1.2" strokeLinecap="round" strokeLinejoin="round" />
-    </svg>
+    <div
+      className="flex items-center justify-between gap-4 rounded-xl px-4 py-2.5"
+      style={{
+        background: "rgba(9, 9, 11, 0.5)",
+        backdropFilter: "blur(12px)",
+        WebkitBackdropFilter: "blur(12px)",
+        border: `1px solid ${tokens.border}`,
+        fontFamily: FONT_MONO,
+        fontSize: 10,
+        letterSpacing: "0.18em",
+        textTransform: "uppercase",
+      }}
+    >
+      <div className="flex items-center gap-4 min-w-0">
+        <span className="flex items-center gap-1.5 shrink-0" style={{ color: paused ? tokens.loss : tokens.winText }}>
+          <svg width="6" height="6" viewBox="0 0 6 6" aria-hidden="true">
+            <circle cx="3" cy="3" r="3" fill="currentColor">
+              {!paused && <animate attributeName="opacity" values="1;0.4;1" dur="1.4s" repeatCount="indefinite" />}
+            </circle>
+          </svg>
+          {paused ? "Halted" : "Live"}
+        </span>
+        <span className="shrink-0" style={{ color: tokens.textDim }}>
+          Session
+        </span>
+        <span style={{ color: tokens.text, fontVariantNumeric: "tabular-nums" }}>
+          {tickCount} <span style={{ color: tokens.textDim, marginLeft: 4 }}>ticks</span>
+        </span>
+      </div>
+      <div className="flex items-center gap-4">
+        <span style={{ color: tokens.textDim }}>Updated</span>
+        <span style={{ color: tokens.textMute, fontVariantNumeric: "tabular-nums" }}>
+          {secondsAgo}s ago
+        </span>
+      </div>
+    </div>
   );
 }
 
@@ -969,14 +958,45 @@ function TradePanel({
         <QuickPick active={shares === maxShares} onClick={() => setShares(maxShares)}>MAX</QuickPick>
       </div>
 
-      <div className="flex items-center justify-between rounded-md px-3 py-2 mb-4" style={{ background: tokens.glass, border: `1px solid ${tokens.border}`, fontFamily: FONT_MONO, fontSize: 11, color: tokens.textMute }}>
-        <span className="uppercase tracking-[0.14em]">Price impact</span>
-        <span style={{ color: tokens.winText, fontVariantNumeric: "tabular-nums" }}>
-          buy {buyImpact >= 0 ? "+" : ""}{buyImpact.toFixed(2)}%
-        </span>
-        <span style={{ color: tokens.loss, fontVariantNumeric: "tabular-nums" }}>
-          sell {sellImpact >= 0 ? "+" : ""}{sellImpact.toFixed(2)}%
-        </span>
+      <div className="rounded-md mb-4 overflow-hidden" style={{ background: tokens.glass, border: `1px solid ${tokens.border}` }}>
+        <div className="flex items-center justify-between px-3 pt-2 pb-1" style={{ fontFamily: FONT_MONO, fontSize: 11, color: tokens.textMute }}>
+          <span className="uppercase tracking-[0.14em]">Price impact</span>
+          <div className="flex items-center gap-3">
+            <span style={{ color: tokens.winText, fontVariantNumeric: "tabular-nums" }}>
+              buy {buyImpact >= 0 ? "+" : ""}{buyImpact.toFixed(2)}%
+            </span>
+            <span style={{ color: tokens.loss, fontVariantNumeric: "tabular-nums" }}>
+              sell {sellImpact >= 0 ? "+" : ""}{sellImpact.toFixed(2)}%
+            </span>
+          </div>
+        </div>
+        {/* Pressure bar — visualizes AMM impact balance proportionally */}
+        <div className="relative h-1 mx-3 mb-2 mt-1 rounded-full overflow-hidden" style={{ background: "rgba(255,255,255,0.04)" }}>
+          {(() => {
+            const totalMag = Math.abs(buyImpact) + Math.abs(sellImpact);
+            const buyWidth = totalMag === 0 ? 50 : (Math.abs(buyImpact) / totalMag) * 100;
+            return (
+              <>
+                <div
+                  className="absolute inset-y-0 left-0 transition-all duration-300"
+                  style={{
+                    width: `${buyWidth}%`,
+                    background: `linear-gradient(90deg, ${tokens.win} 0%, ${tokens.winText} 100%)`,
+                    boxShadow: `0 0 8px ${tokens.winGlow}`,
+                  }}
+                />
+                <div
+                  className="absolute inset-y-0 right-0 transition-all duration-300"
+                  style={{
+                    width: `${100 - buyWidth}%`,
+                    background: `linear-gradient(90deg, ${tokens.loss} 0%, #B91C1C 100%)`,
+                    boxShadow: `0 0 8px ${tokens.lossGlow}`,
+                  }}
+                />
+              </>
+            );
+          })()}
+        </div>
       </div>
 
       <div className="grid grid-cols-2 gap-2.5">
@@ -1006,15 +1026,18 @@ function QuickPick({ active, onClick, children }: { active: boolean; onClick: ()
     <button
       type="button"
       onClick={onClick}
-      className="flex-1 py-1.5 rounded-md transition-all"
+      className="flex-1 py-2 rounded-md transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2"
       style={{
         background: active ? tokens.glass2 : "transparent",
-        border: `1px solid ${active ? tokens.borderBright : tokens.border}`,
+        border: `1px solid ${active ? tokens.accent : tokens.border}`,
         color: active ? tokens.text : tokens.textMute,
         fontFamily: FONT_MONO,
         fontSize: 11,
         letterSpacing: "0.14em",
         fontWeight: active ? 600 : 400,
+        boxShadow: active ? `0 0 0 1px ${tokens.accent}33, inset 0 0 12px ${tokens.accent}11` : "none",
+        ["--tw-ring-color" as string]: tokens.accent,
+        ["--tw-ring-offset-color" as string]: tokens.bg,
       }}
     >
       {children}
@@ -1027,16 +1050,22 @@ function TradeButton({ variant, onClick, disabled, children }: { variant: "buy" 
   return (
     <motion.button
       type="button"
-      whileTap={{ scale: 0.97 }}
+      whileTap={{ scale: 0.96 }}
+      whileHover={disabled ? undefined : { y: -1 }}
       onClick={onClick}
       disabled={disabled}
-      className="flex flex-col items-start gap-0.5 px-4 py-3 rounded-lg transition-all disabled:opacity-40 disabled:cursor-not-allowed focus-visible:outline-2 focus-visible:outline-offset-2"
+      className="flex flex-col items-start gap-1 px-5 py-4 rounded-xl transition-all disabled:opacity-40 disabled:cursor-not-allowed focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 min-h-[68px]"
       style={{
-        background: isBuy ? `linear-gradient(180deg, ${tokens.win} 0%, #0F9F70 100%)` : tokens.glass,
-        border: `1px solid ${isBuy ? tokens.win : tokens.borderBright}`,
-        color: isBuy ? "#062818" : tokens.text,
-        boxShadow: isBuy ? `0 0 24px ${tokens.winGlow}` : "none",
-        outlineColor: isBuy ? tokens.win : tokens.loss,
+        background: isBuy
+          ? `linear-gradient(180deg, ${tokens.win} 0%, #0F9F70 100%)`
+          : `linear-gradient(180deg, rgba(239,68,68,0.12) 0%, rgba(239,68,68,0.05) 100%)`,
+        border: `1px solid ${isBuy ? tokens.win : tokens.loss + "66"}`,
+        color: isBuy ? "#062818" : tokens.loss,
+        boxShadow: isBuy
+          ? `0 0 32px ${tokens.winGlow}, 0 8px 24px rgba(16,185,129,0.25), inset 0 1px 0 rgba(255,255,255,0.25)`
+          : `0 0 16px rgba(239,68,68,0.20), inset 0 1px 0 rgba(255,255,255,0.05)`,
+        ["--tw-ring-color" as string]: isBuy ? tokens.win : tokens.loss,
+        ["--tw-ring-offset-color" as string]: tokens.bg,
       }}
     >
       {children}
@@ -1162,14 +1191,63 @@ function PnlStat({ label, value }: { label: string; value: number }) {
 // ─────────────────────────────────────────────────────────────────────────────
 //  LIVE FEED
 // ─────────────────────────────────────────────────────────────────────────────
-function LiveFeed({ feed, now }: { feed: FeedEntry[]; now: number }) {
+function LiveFeed({
+  feed,
+  now,
+  paused,
+  onTogglePause,
+}: {
+  feed: FeedEntry[];
+  now: number;
+  paused: boolean;
+  onTogglePause: () => void;
+}) {
   return (
     <GlassCard className="p-5">
       <div className="flex items-center justify-between mb-4 pb-3 border-b" style={{ borderColor: tokens.border }}>
         <div className="text-[10px] uppercase tracking-[0.22em]" style={{ color: tokens.textMute, fontFamily: FONT_MONO }}>
           Live activity
         </div>
-        <PulsingLive />
+        <div className="flex items-center gap-2">
+          <button
+            type="button"
+            onClick={onTogglePause}
+            aria-label={paused ? "Resume live feed" : "Pause live feed"}
+            className="h-6 w-6 flex items-center justify-center rounded transition-colors"
+            style={{
+              border: `1px solid ${tokens.border}`,
+              color: paused ? tokens.winText : tokens.textMute,
+              background: paused ? tokens.winSoft : "transparent",
+            }}
+          >
+            {paused ? (
+              <svg width="9" height="9" viewBox="0 0 9 9" aria-hidden="true">
+                <path d="M1 0.5L8 4.5L1 8.5V0.5Z" fill="currentColor" />
+              </svg>
+            ) : (
+              <svg width="8" height="9" viewBox="0 0 8 9" aria-hidden="true">
+                <rect x="0" y="0.5" width="2.5" height="8" fill="currentColor" />
+                <rect x="5.5" y="0.5" width="2.5" height="8" fill="currentColor" />
+              </svg>
+            )}
+          </button>
+          {paused ? (
+            <span
+              className="px-2 py-0.5 rounded uppercase tracking-[0.18em]"
+              style={{
+                background: tokens.lossSoft,
+                color: tokens.loss,
+                fontFamily: FONT_MONO,
+                fontSize: 9,
+                fontWeight: 600,
+              }}
+            >
+              Paused
+            </span>
+          ) : (
+            <PulsingLive />
+          )}
+        </div>
       </div>
 
       {feed.length === 0 ? (
