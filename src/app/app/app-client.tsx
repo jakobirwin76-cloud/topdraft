@@ -4,6 +4,7 @@ import Link from "next/link";
 import { useState, useMemo } from "react";
 import { motion } from "framer-motion";
 import { type Athlete, type Sport } from "@/lib/athletes/data";
+import { MarqueeTicker } from "@/components/marquee-ticker";
 
 const tokens = {
   bg: "#09090B",
@@ -44,6 +45,14 @@ export default function AppHomeClient({ athletes }: { athletes: Athlete[] }) {
 
   const filtered = filter === "ALL" ? athletes : athletes.filter((a) => a.sport === filter);
 
+  // Top movers — deterministic synthetic 24h delta per slug, sorted by |delta|
+  const topMovers = useMemo(() => {
+    return athletes
+      .map((a) => ({ ...a, delta24h: syntheticDelta(a.slug) }))
+      .sort((a, b) => Math.abs(b.delta24h) - Math.abs(a.delta24h))
+      .slice(0, 4);
+  }, [athletes]);
+
   return (
     <div
       style={{
@@ -55,6 +64,7 @@ export default function AppHomeClient({ athletes }: { athletes: Athlete[] }) {
       className="relative overflow-x-hidden"
     >
       <RadialBackgrounds />
+      <MarqueeTicker />
 
       <div className="relative z-10 mx-auto max-w-[1400px] px-5 md:px-8 pt-10 md:pt-16 pb-20">
         {/* Header */}
@@ -86,6 +96,21 @@ export default function AppHomeClient({ athletes }: { athletes: Athlete[] }) {
             Play money only. 18+.
           </p>
         </header>
+
+        {/* Top movers strip */}
+        <section className="mb-8">
+          <div
+            className="text-[10px] uppercase tracking-[0.22em] mb-3"
+            style={{ color: tokens.textMute, fontFamily: FONT_MONO }}
+          >
+            Top movers · 24h
+          </div>
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+            {topMovers.map((a) => (
+              <TopMoverCard key={a.slug} athlete={a} delta={a.delta24h} />
+            ))}
+          </div>
+        </section>
 
         {/* Filter pills */}
         <div className="mb-6 flex gap-2 overflow-x-auto pb-1" style={{ scrollbarWidth: "none" }}>
@@ -242,6 +267,97 @@ function AthleteCard({ athlete, delay }: { athlete: Athlete; delay: number }) {
         </div>
       </Link>
     </motion.div>
+  );
+}
+
+// Deterministic synthetic 24h delta per slug, range roughly ±7%.
+function syntheticDelta(slug: string): number {
+  let h = 2166136261;
+  for (let i = 0; i < slug.length; i++) {
+    h ^= slug.charCodeAt(i);
+    h = Math.imul(h, 16777619);
+  }
+  const u = (h >>> 0) / 0xffffffff;
+  const sign = ((h >>> 8) & 1) === 0 ? 1 : -1;
+  return sign * (0.01 + u * 0.06);
+}
+
+function TopMoverCard({ athlete, delta }: { athlete: Athlete; delta: number }) {
+  const up = delta >= 0;
+  const tone = up ? tokens.winText : "#FB7185";
+  const glow = up ? "rgba(16,185,129,0.20)" : "rgba(251,113,133,0.18)";
+  return (
+    <Link href={`/athlete/${athlete.slug}`}>
+      <div
+        className="group p-4 rounded-xl transition-all cursor-pointer h-full"
+        style={{
+          background: tokens.glass,
+          backdropFilter: "blur(16px) saturate(140%)",
+          WebkitBackdropFilter: "blur(16px) saturate(140%)",
+          border: `1px solid ${tokens.border}`,
+          boxShadow: `0 0 24px ${glow}`,
+        }}
+      >
+        <div className="flex items-center gap-3 mb-3">
+          <div
+            className="h-9 w-9 rounded-full flex items-center justify-center text-xs font-bold shrink-0"
+            style={{
+              background: `linear-gradient(135deg, ${tokens.accent} 0%, ${tokens.accentDeep} 100%)`,
+              color: "#fff",
+              fontFamily: FONT_DISPLAY,
+              letterSpacing: "-0.02em",
+            }}
+          >
+            {athlete.initials}
+          </div>
+          <div className="min-w-0">
+            <div
+              className="truncate"
+              style={{
+                fontFamily: FONT_DISPLAY,
+                fontWeight: 600,
+                fontSize: 13,
+                letterSpacing: "-0.02em",
+                color: tokens.text,
+              }}
+            >
+              {athlete.name}
+            </div>
+            <div
+              className="text-[9px] uppercase tracking-[0.18em]"
+              style={{ color: tokens.textDim, fontFamily: FONT_MONO }}
+            >
+              {athlete.league} · {athlete.position}
+            </div>
+          </div>
+        </div>
+        <div className="flex items-baseline justify-between">
+          <span
+            style={{
+              fontFamily: FONT_MONO,
+              fontSize: 16,
+              fontWeight: 700,
+              fontVariantNumeric: "tabular-nums",
+              color: tokens.text,
+            }}
+          >
+            ${athlete.initialPrice.toFixed(2)}
+          </span>
+          <span
+            style={{
+              fontFamily: FONT_MONO,
+              fontSize: 12,
+              fontWeight: 600,
+              fontVariantNumeric: "tabular-nums",
+              color: tone,
+              textShadow: `0 0 6px ${glow}`,
+            }}
+          >
+            {up ? "▲" : "▼"} {up ? "+" : ""}{(delta * 100).toFixed(2)}%
+          </span>
+        </div>
+      </div>
+    </Link>
   );
 }
 
