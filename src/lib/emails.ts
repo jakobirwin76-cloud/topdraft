@@ -2,8 +2,10 @@ import { Resend } from "resend";
 import { env } from "@/lib/env";
 
 let client: Resend | null = null;
-function getResend() {
-  if (!client) client = new Resend(env.get().RESEND_API_KEY);
+function getResend(): Resend | null {
+  const key = env.get().RESEND_API_KEY;
+  if (!key) return null;
+  if (!client) client = new Resend(key);
   return client;
 }
 
@@ -20,8 +22,11 @@ export async function sendWaitlistWelcome(opts: {
   referralUrl: string;
 }) {
   const { to, verifyUrl, position, referralUrl } = opts;
-  return getResend().emails.send({
-    from: env.get().RESEND_FROM_EMAIL,
+  const resend = getResend();
+  if (!resend) return;
+  const from = env.get().RESEND_FROM_EMAIL ?? "Topdraft <noreply@topdrafts.app>";
+  return resend.emails.send({
+    from,
     to,
     subject: `You're #${position} on the Topdraft waitlist`,
     html: shell(`
@@ -48,8 +53,11 @@ export async function sendWaitlistWelcome(opts: {
 
 export async function sendReferralCredited(opts: { to: string; referredEmail: string; newRefCount: number }) {
   const { to, referredEmail, newRefCount } = opts;
-  return getResend().emails.send({
-    from: env.get().RESEND_FROM_EMAIL,
+  const resend = getResend();
+  if (!resend) return;
+  const from = env.get().RESEND_FROM_EMAIL ?? "Topdraft <noreply@topdrafts.app>";
+  return resend.emails.send({
+    from,
     to,
     subject: `Someone joined Topdraft from your link`,
     html: shell(`

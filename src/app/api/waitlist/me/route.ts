@@ -11,7 +11,7 @@ export async function GET() {
   const token = cookieJar.get("ax_wl")?.value;
   if (!token) return unauthorized("Not on the waitlist");
 
-  const payload = verifyWaitlistToken(token, env.get().APP_WAITLIST_SECRET);
+  const payload = verifyWaitlistToken(token, env.get().APP_WAITLIST_SECRET ?? "");
   if (!payload) return unauthorized("Session expired");
 
   const sb = getServiceSupabase();

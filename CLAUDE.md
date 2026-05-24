@@ -195,6 +195,37 @@ docs/                     Privacy, ToS, Compliance, Testing, Marketing, Quest
 7. **No service-role key in middleware** — it runs on the edge and leaks more easily.
 8. **CSP, HSTS, X-Frame-Options** set in `next.config.ts`.
 
+### 7. TRADE SAFETY — LAUNCH BLOCKERS (anti-front-running)
+
+The threat: users at the stadium / on RedZone / on faster sports feeds can see plays before our SportsRadar webhook fires. Without protection, they'd buy 2-5 seconds before every TD and print free money from the AMM. **Two mandatory mitigations must ship before any real trade flow goes live:**
+
+1. **15-second broadcast delay on the public price feed.**
+   - Webhook ingests `stat_event` in real-time, applies it internally.
+   - The price clients SEE is delayed by 15s (matches average TV broadcast lag).
+   - Everyone — stadium goers, RedZone watchers, normal users — trades on the same delayed snapshot. Nobody has an edge.
+
+2. **10-second trade halt on high-impact events.**
+   - When `|multiplier - 1| > 0.04` fires (TD, INT, big play, fumble, etc.), set `athletes.market_halt_until = now() + interval '10 seconds'`.
+   - `place_trade()` checks this column at the top and raises `market_halted` if set.
+   - UI shows "MARKET PAUSED · LIVE EVENT" banner during the halt.
+
+**Required schema** (migration `0006_trade_safety.sql`, not yet written):
+```sql
+alter table public.athletes add column market_halt_until timestamptz;
+create index idx_athletes_halt on public.athletes(id) where market_halt_until is not null;
+```
+
+**Required `place_trade()` check** (insert after the athlete row lock):
+```sql
+if v_athlete.market_halt_until is not null and v_athlete.market_halt_until > now() then
+  raise exception 'market_halted' using errcode = '22023';
+end if;
+```
+
+**Phase 2 (post-launch hardening):** 1-second execution lag on every trade, surveillance dashboard flagging users who consistently buy seconds before positive events.
+
+**DO NOT** ship real trading (PROMPT 8) without items 1 and 2 above. Launch without them = arbitrageurs drain the AMM.
+
 ---
 
 ## AD STRATEGY — FROM DAY 1

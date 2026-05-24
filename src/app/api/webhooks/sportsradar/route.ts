@@ -16,8 +16,11 @@ export async function POST(req: Request) {
   const signature = req.headers.get("x-topdraft-signature") ?? "";
   const raw = await req.text();
 
+  const webhookSecret = env.get().SPORTRADAR_WEBHOOK_SECRET;
+  if (!webhookSecret) return unauthorized("Webhook not configured");
+
   const expected = crypto
-    .createHmac("sha256", env.get().SPORTRADAR_WEBHOOK_SECRET)
+    .createHmac("sha256", webhookSecret)
     .update(raw)
     .digest("hex");
 

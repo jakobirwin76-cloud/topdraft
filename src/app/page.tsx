@@ -44,7 +44,16 @@ export default async function LandingPage() {
             <div className={`${LABEL} mb-6`}>
               Waitlist
             </div>
-            <h1 className="font-cyber text-gradient text-[48px] md:text-[96px] leading-[1.05] tracking-[-0.01em] mb-7 md:mb-10 uppercase">
+            <h1
+              className="font-display font-extrabold text-[48px] md:text-[96px] leading-[1.05] tracking-[-0.03em] mb-7 md:mb-10 uppercase"
+              style={{
+                background: "linear-gradient(135deg, #6366F1 0%, #A855F7 45%, #EC4899 100%)",
+                WebkitBackgroundClip: "text",
+                backgroundClip: "text",
+                color: "transparent",
+                WebkitTextFillColor: "transparent",
+              }}
+            >
               Stop being right
               <br />
               for free.
@@ -91,7 +100,7 @@ export default async function LandingPage() {
         <div className="px-5 md:px-12 py-24 md:py-32 max-w-6xl mx-auto">
           <ScrollReveal>
             <div className="grid md:grid-cols-2 gap-12 md:gap-24 items-start">
-              <h2 className="font-display text-4xl md:text-6xl leading-[1.05] tracking-[-0.01em]">
+              <h2 className="font-display font-extrabold text-5xl md:text-7xl leading-[0.95] tracking-[-0.035em]">
                 Being right
                 <br />
                 about sports
@@ -120,7 +129,7 @@ export default async function LandingPage() {
                 className="border border-border bg-surface rounded-xl p-8 hover:bg-surface-2 transition-base h-full"
               >
                 <s.Icon className="w-6 h-6 text-accent mb-8" strokeWidth={2} />
-                <div className="font-display text-xl md:text-2xl tracking-[-0.01em] mb-3">
+                <div className="font-display font-bold text-xl md:text-2xl tracking-[-0.025em] mb-3">
                   {s.title}
                 </div>
                 <div className="text-sm text-text-mute leading-relaxed">{s.body}</div>
@@ -148,9 +157,9 @@ export default async function LandingPage() {
               />
               <div className="flex-1 relative">
                 <div className={`${LABEL} mb-4`}>Featured · Athlete Compare</div>
-                <h3 className="font-display text-3xl md:text-5xl leading-[1.05] tracking-[-0.01em] mb-3">
+                <h3 className="font-display font-extrabold text-3xl md:text-5xl leading-[0.95] tracking-[-0.035em] mb-3">
                   <span style={{ color: "#60a5fa" }}>MESSI</span>
-                  <span className="text-text-dim mx-3 font-normal">vs</span>
+                  <span className="text-text-dim mx-3 font-medium">vs</span>
                   <span style={{ color: "#f87171" }}>RONALDO</span>
                 </h3>
                 <p className="text-sm text-text-mute max-w-sm leading-relaxed">
@@ -195,7 +204,7 @@ export default async function LandingPage() {
       {/* ─────────── FINAL CTA ─────────── */}
       <section className="border-t border-border bg-surface/40">
         <div className="px-5 md:px-12 py-24 md:py-32 max-w-2xl mx-auto text-center">
-          <h2 className="font-display text-4xl md:text-6xl leading-[1.05] tracking-[-0.01em] mb-7">
+          <h2 className="font-display font-extrabold text-5xl md:text-7xl leading-[0.95] tracking-[-0.035em] mb-7">
             Your sports IQ
             <br />
             <span className="text-accent">is worth money.</span>

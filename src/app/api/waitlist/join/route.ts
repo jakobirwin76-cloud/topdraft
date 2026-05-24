@@ -58,7 +58,7 @@ export async function POST(req: Request) {
 
   // Build and sign the email-verification token.
   const verifyPayload = buildVerificationPayload(row.id, row.email);
-  const token = signWaitlistToken(verifyPayload, env.get().APP_WAITLIST_SECRET);
+  const token = signWaitlistToken(verifyPayload, env.get().APP_WAITLIST_SECRET ?? "");
   const verifyUrl = `${env.get().NEXT_PUBLIC_APP_URL}/api/waitlist/verify?token=${encodeURIComponent(token)}`;
   const referralUrl = `${env.get().NEXT_PUBLIC_APP_URL}/w/${row.referral_code}`;
 

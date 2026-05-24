@@ -1,7 +1,7 @@
-@import url("https://fonts.googleapis.com/css2?family=Bowlby+One&family=Bricolage+Grotesque:opsz,wght@12..96,500..800&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600;700&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Inter+Tight:wght@700;800&family=Inter:opsz,wght@14..32,300..700&family=JetBrains+Mono:wght@400;500;700&family=Fraunces:opsz,wght@9..144,400..900&display=swap");
 @import "tailwindcss";
 
-/* Self-hosted variable font — License: OFL (see public/fonts/league-spartan/LICENSE-OFL.md). */
+/* Self-hosted variable font — License: OFL */
 @font-face {
   font-family: "League Spartan";
   font-style: normal;
@@ -11,51 +11,33 @@
        url("/fonts/league-spartan/LeagueSpartan-VF.woff2") format("woff2");
 }
 
-/* Self-hosted display face — Nineties Headliner by JWCo.
-   NOTE: license file was not included in the source .rar. Verify commercial
-   rights before any public/paid marketing. */
-@font-face {
-  font-family: "Nineties Headliner";
-  font-style: normal;
-  font-weight: 400;
-  font-display: swap;
-  src: url("/fonts/nineties-headliner/NinetiesHeadliner-Regular.ttf") format("truetype");
-}
-
 /* =============================================================================
- * Topdraft — Gen Z institutional. Deep obsidian + multi-color mesh aurora +
- * Bricolage Grotesque (expressive grotesque, the 2026 Gen Z pick).
+ * Topdraft — Obsidian Violet palette (locked 2026-05-16).
+ * Single accent color, solid only. Never gradients.
  * ============================================================================= */
 @theme {
-  --color-bg:           #0A0A0C;   /* deep obsidian — not pure black */
-  --color-surface:      #131318;
-  --color-surface-2:    #1B1B22;
-  --color-border:       rgba(255, 255, 255, 0.08);
+  --color-bg:           #0A0710;
+  --color-surface:      #120D1E;
+  --color-surface-2:    #1A1330;
+  --color-border:       rgba(255, 255, 255, 0.07);
   --color-text:         #FFFFFF;
-  --color-text-mute:    #A1A1AA;
-  --color-text-dim:     #52525B;
-
-  /* Electric Indigo (primary) + Electric Cyan (accent for hand-drawn marks) */
-  --color-accent:       #6366F1;
-  --color-accent-2:     #818CF8;
-  --color-accent-soft:  rgba(99, 102, 241, 0.10);
-  --color-electric:     #22D3EE;   /* cyan — used on swoosh underlines */
-
+  --color-text-mute:    #9E97B2;
+  --color-text-dim:     #564F70;
+  --color-accent:       #6D28D9;
+  --color-accent-2:     #8B5CF6;
+  --color-accent-soft:  rgba(109, 40, 217, 0.10);
   --color-win:          #22C55E;
   --color-loss:         #EF4444;
 
-  /* Display: Bowlby One — chunky Y2K-retro for problem + final-CTA + tile titles.
-     Hero: League Spartan (self-hosted variable, weights 100–900) — used ONLY
-           on the hero "Stop being right / for free." headline.
-     Secondary: Bricolage Grotesque — logotype + athlete-card name.
-     Body & UI: Inter Variable.
-     Data: JetBrains Mono on prices + percentages.
-     `--font-mono` aliased to Inter for backward-compat with existing classes. */
-  --font-display:       "Bowlby One", "Impact", "Arial Black", sans-serif;
-  --font-cyber:         "Nineties Headliner", "League Spartan", "Impact", sans-serif;
-  --font-secondary:     "Bricolage Grotesque", "Inter Tight", -apple-system, sans-serif;
-  --font-mono:          "Inter", -apple-system, BlinkMacSystemFont, sans-serif;
-  --font-data:          "JetBrains Mono", ui-monospace, "SFMono-Regular", monospace;
+  /* Inter Tight — display headlines (700–800)
+     Inter        — body + UI
+     JetBrains Mono — prices, percentages, data
+     --font-mono aliased to Inter for backward-compat */
+  /* Single Inter family across the whole site (display + body + UI).
+     Headings rely on font-weight + tracking modulation, not a different family. */
+  --font-display:  "Inter", -apple-system, BlinkMacSystemFont, sans-serif;
+  --font-mono:     "Inter", -apple-system, BlinkMacSystemFont, sans-serif;
+  --font-data:     "JetBrains Mono", ui-monospace, "SFMono-Regular", monospace;
 }
 
 * {
@@ -65,73 +47,35 @@
 }
 
 html {
-  background: #050508;
+  background: #0A0710;
 }
 
 body {
-  position: relative;
-  /* Multi-stop body gradient — deep indigo at top, near-obsidian middle,
-     deep purple at bottom. Sits BEHIND the aurora layer for stacked depth. */
-  background:
-    radial-gradient(ellipse 80% 50% at 50% 0%, #0F0820 0%, transparent 65%),
-    radial-gradient(ellipse 70% 40% at 50% 100%, #1A0820 0%, transparent 65%),
-    linear-gradient(180deg, #08081A 0%, #050508 50%, #0E0518 100%);
+  background: #0A0710;
   background-attachment: fixed;
   color: var(--color-text);
   font-family: var(--font-mono);
-  font-feature-settings: "tnum" 1, "calt" 1, "ss01" 1;
+  font-feature-settings: "tnum" 1, "calt" 1;
   min-height: 100vh;
   overflow-x: hidden;
 }
 
 /* =============================================================================
- * AURORA — atmospheric indigo wash, top-prominent.
+ * Single restrained violet ambient glow — top of page only.
+ * Collapsed from 5-color aurora (deleted 2026-05-16 — was the #1 AI-slop tell).
  * ============================================================================= */
 body::before {
   content: "";
   position: fixed;
   inset: -10%;
-  background:
-    /* Big indigo top-center — primary aurora */
-    radial-gradient(ellipse 100% 55% at 50% -5%, rgba(99, 102, 241, 0.55), transparent 65%),
-    /* Electric blue top-left corner */
-    radial-gradient(ellipse 45% 40% at 0% 15%, rgba(56, 189, 248, 0.40), transparent 65%),
-    /* Deep purple top-right corner */
-    radial-gradient(ellipse 45% 40% at 100% 15%, rgba(139, 92, 246, 0.48), transparent 65%),
-    /* Hot magenta center-mid — Gen Z color pop */
-    radial-gradient(ellipse 60% 30% at 50% 55%, rgba(217, 70, 239, 0.18), transparent 70%),
-    /* Lavender bottom for symmetry */
-    radial-gradient(ellipse 70% 30% at 50% 100%, rgba(165, 180, 252, 0.22), transparent 70%);
-  filter: blur(75px);
-  pointer-events: none;
-  z-index: -2;
-  animation: aurora-drift 32s ease-in-out infinite;
-  will-change: transform;
-}
-
-body::after {
-  content: "";
-  position: fixed;
-  inset: 0;
-  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 1 0 0 0 0 1 0 0 0 0 1 0 0 0 0.55 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
-  opacity: 0.05;
+  background: radial-gradient(ellipse 80% 50% at 50% -5%, rgba(109, 40, 217, 0.22), transparent 70%);
+  filter: blur(80px);
   pointer-events: none;
   z-index: -1;
-  mix-blend-mode: overlay;
-}
-
-@keyframes aurora-drift {
-  0%, 100% { transform: translate(0, 0) scale(1) rotate(0deg); }
-  33%      { transform: translate(-2%, 1.5%) scale(1.04) rotate(0.6deg); }
-  66%      { transform: translate(2%, -1.5%) scale(0.98) rotate(-0.6deg); }
-}
-
-@media (prefers-reduced-motion: reduce) {
-  body::before { animation: none; }
 }
 
 ::selection {
-  background: color-mix(in oklab, var(--color-accent) 35%, transparent);
+  background: rgba(109, 40, 217, 0.35);
   color: var(--color-text);
 }
 
@@ -142,26 +86,19 @@ body::after {
 }
 
 /* =============================================================================
- * Premium UI utilities
+ * UI utilities
  * ============================================================================= */
 
-/**
- * Glass card — subtle white-translucent fill + 1px solid border.
- * No gradient border — institutional clean.
- */
 .glass-card {
   position: relative;
   background: rgba(255, 255, 255, 0.03);
-  border: 1px solid rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.07);
   backdrop-filter: blur(16px) saturate(140%);
   -webkit-backdrop-filter: blur(16px) saturate(140%);
   border-radius: 12px;
 }
 
-/**
- * Card shine — localized 600px indigo glow behind a single card.
- * Apply on the card's wrapper, NOT the card itself, so the glow sits behind.
- */
+/* Localized violet glow behind a single card — apply on the wrapper */
 .card-shine {
   position: relative;
 }
@@ -169,17 +106,15 @@ body::after {
   content: "";
   position: absolute;
   inset: -120px;
-  background: radial-gradient(600px circle at center, rgba(99, 102, 241, 0.12), transparent 70%);
+  background: radial-gradient(600px circle at center, rgba(109, 40, 217, 0.12), transparent 70%);
   pointer-events: none;
   z-index: -1;
 }
 
-/**
- * Input rect — rounded container, subtle bg + border, indigo glow on focus.
- */
+/* Dark input with violet focus ring */
 .input-rect {
   background: rgba(255, 255, 255, 0.02);
-  border: 1px solid rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.07);
   border-radius: 10px;
   padding: 14px 16px;
   outline: none;
@@ -189,39 +124,74 @@ body::after {
   color: var(--color-text-dim);
 }
 .input-rect:hover {
-  border-color: rgba(255, 255, 255, 0.14);
+  border-color: rgba(255, 255, 255, 0.12);
 }
 .input-rect:focus,
 .input-rect:focus-visible {
   border-color: var(--color-accent);
-  box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.18);
+  box-shadow: 0 0 0 3px rgba(109, 40, 217, 0.18);
   background: rgba(255, 255, 255, 0.04);
   outline: none;
 }
 
-/**
- * Floating disc / portrait — indigo drop-shadow glow.
- */
 .float-disc {
   filter:
-    drop-shadow(0 12px 32px rgba(99, 102, 241, 0.32))
-    drop-shadow(0 0 18px rgba(99, 102, 241, 0.18));
+    drop-shadow(0 12px 32px rgba(109, 40, 217, 0.32))
+    drop-shadow(0 0 18px rgba(109, 40, 217, 0.18));
 }
 
-/**
- * Global hover-transition default — apply to interactive elements that don't
- * already specify their own duration.
- */
 .transition-base {
   transition: all 0.2s ease-in-out;
 }
 
-/**
- * Text gradient — Y2K-coded sweep across the headline.
- * Indigo → magenta → cyan, 135° diagonal. Use only on a single hero word/line.
- */
+/* =============================================================================
+ * Design-system primitives — shimmer, ticker, live pulse
+ * ============================================================================= */
+
+@keyframes shimmer {
+  0% { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
+}
+
+.skeleton-shimmer {
+  background: linear-gradient(
+    90deg,
+    var(--color-surface) 0%,
+    var(--color-surface-2) 50%,
+    var(--color-surface) 100%
+  );
+  background-size: 200% 100%;
+  animation: shimmer 1.5s linear infinite;
+}
+
+@keyframes ticker {
+  from { transform: translateX(0); }
+  to   { transform: translateX(-50%); }
+}
+
+.animate-ticker {
+  animation: ticker 40s linear infinite;
+  will-change: transform;
+}
+
+@keyframes live-pulse {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50%      { opacity: 0.5; transform: scale(0.85); }
+}
+
+.live-pulse {
+  animation: live-pulse 1.4s ease-in-out infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .skeleton-shimmer,
+  .animate-ticker,
+  .live-pulse { animation: none; }
+}
+
+/* Hero headline gradient — indigo → violet → magenta */
 .text-gradient {
-  background: linear-gradient(135deg, #6366F1 0%, #A855F7 40%, #D946EF 70%, #22D3EE 100%);
+  background: linear-gradient(135deg, #6366F1 0%, #A855F7 45%, #EC4899 100%);
   -webkit-background-clip: text;
   background-clip: text;
   color: transparent;
