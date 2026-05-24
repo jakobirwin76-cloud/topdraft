@@ -16,7 +16,7 @@ export async function GET(req: Request) {
   const token = url.searchParams.get("token");
   if (!token) return NextResponse.redirect(new URL("/waitlist?error=missing_token", url.origin));
 
-  const payload = verifyWaitlistToken(token, env.get().APP_WAITLIST_SECRET);
+  const payload = verifyWaitlistToken(token, env.get().APP_WAITLIST_SECRET ?? "");
   if (!payload) return NextResponse.redirect(new URL("/waitlist?error=invalid_token", url.origin));
 
   const sb = getServiceSupabase();
@@ -53,7 +53,7 @@ export async function GET(req: Request) {
 
   // Mint a 90-day session token and set the cookie.
   const sessionPayload = buildSessionPayload(row.id, row.email);
-  const sessionToken = signWaitlistToken(sessionPayload, env.get().APP_WAITLIST_SECRET);
+  const sessionToken = signWaitlistToken(sessionPayload, env.get().APP_WAITLIST_SECRET ?? "");
 
   const response = NextResponse.redirect(new URL("/waitlist/me", url.origin));
   response.cookies.set("ax_wl", sessionToken, {

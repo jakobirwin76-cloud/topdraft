@@ -15,7 +15,7 @@ export default async function WaitlistMe() {
   const token = cookieJar.get("ax_wl")?.value;
   if (!token) redirect("/waitlist");
 
-  const payload = verifyWaitlistToken(token, env.get().APP_WAITLIST_SECRET);
+  const payload = verifyWaitlistToken(token, env.get().APP_WAITLIST_SECRET ?? "");
   if (!payload) redirect("/waitlist?error=session_expired");
 
   const sb = getServiceSupabase();
