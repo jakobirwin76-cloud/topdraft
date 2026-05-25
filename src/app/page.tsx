@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { ArrowRight, Crown, Trophy, Zap } from "lucide-react";
 import { Logo } from "@/components/logo";
+import { WaitlistForm } from "@/components/waitlist-form";
 import { AnimatedTradeMock } from "@/components/landing/animated-trade-mock";
 import { FAQAccordion, type FAQItem } from "@/components/landing/faq-accordion";
 import { ScrollReveal } from "@/components/landing/scroll-reveal";
@@ -68,12 +69,12 @@ export default function LandingPage() {
                 Try the demo
                 <ArrowRight className="w-4 h-4" strokeWidth={2.5} />
               </Link>
-              <Link
-                href="/athlete/mahomes"
+              <a
+                href="#waitlist"
                 className="inline-flex items-center justify-center gap-2 border border-border hover:border-text-mute hover:bg-surface text-text font-semibold text-base rounded-lg px-7 py-3.5 transition-base"
               >
-                Featured: Mahomes
-              </Link>
+                Join the waitlist
+              </a>
             </div>
           </div>
           <div className="hidden md:block card-shine">
@@ -202,8 +203,8 @@ export default function LandingPage() {
         </div>
       </section>
 
-      {/* ─────────── FINAL CTA ─────────── */}
-      <section className="border-t border-border bg-surface/40">
+      {/* ─────────── FINAL CTA / WAITLIST ─────────── */}
+      <section id="waitlist" className="border-t border-border bg-surface/40 scroll-mt-20">
         <div className="px-5 md:px-12 py-24 md:py-32 max-w-2xl mx-auto text-center">
           <h2 className="font-display font-extrabold text-5xl md:text-7xl leading-[0.95] tracking-[-0.035em] mb-7">
             Your sports IQ
@@ -211,15 +212,17 @@ export default function LandingPage() {
             <span className="text-accent">is worth money.</span>
           </h2>
           <p className="text-base md:text-lg text-text-mute mb-12 max-w-lg mx-auto leading-relaxed">
-            Free to play. 18+. Play money only.
+            Free to play. 18+. Top 1,000 lock in a permanent Founder badge — first access at launch.
           </p>
-          <Link
-            href="/app"
-            className="inline-flex items-center justify-center gap-2 bg-accent hover:bg-accent-2 text-white font-semibold text-base rounded-lg px-8 py-4 transition-base shadow-[0_0_32px_rgba(109,40,217,0.35)]"
-          >
-            Try the demo
-            <ArrowRight className="w-4 h-4" strokeWidth={2.5} />
-          </Link>
+          <div className="max-w-md mx-auto">
+            <WaitlistForm />
+          </div>
+          <p className="mt-6 text-xs text-text-dim font-data tabular-nums uppercase tracking-[0.18em]">
+            Or skip the line —{" "}
+            <Link href="/app" className="text-accent hover:text-accent-2 underline underline-offset-4">
+              try the demo →
+            </Link>
+          </p>
         </div>
       </section>
 
