@@ -256,13 +256,6 @@ export const ATHLETES: Record<string, Athlete> = {
     team: "Real Madrid", teamCode: "RMA",
     basePrice: 22, initialPrice: 27.0,
   },
-  endrick: {
-    slug: "endrick",
-    sport: "SOCCER", league: "La Liga", position: "ST",
-    name: "Endrick", initials: "EN",
-    team: "Real Madrid", teamCode: "RMA",
-    basePrice: 14, initialPrice: 17.5,
-  },
   wirtz: {
     slug: "wirtz",
     sport: "SOCCER", league: "Premier League", position: "MF",
@@ -318,13 +311,6 @@ export const ATHLETES: Record<string, Athlete> = {
     name: "Cole Palmer", initials: "CP",
     team: "Chelsea", teamCode: "CHE",
     basePrice: 16, initialPrice: 19.5,
-  },
-  maguire: {
-    slug: "maguire",
-    sport: "SOCCER", league: "Premier League", position: "DF",
-    name: "Harry Maguire", initials: "HM",
-    team: "Manchester United", teamCode: "MUN",
-    basePrice: 7, initialPrice: 8.2,
   },
   nicowilliams: {
     slug: "nicowilliams",
