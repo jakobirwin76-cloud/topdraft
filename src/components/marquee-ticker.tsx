@@ -18,14 +18,23 @@ const FONT_DISPLAY = "Inter, -apple-system, system-ui, sans-serif";
 const FONT_MONO = "'JetBrains Mono', ui-monospace, monospace";
 
 const TICKER_ROWS = [
-  { name: "Mahomes",  price: 20.10, delta: 0.052, spark: [18, 18.4, 19.1, 18.8, 19.6, 20.2, 19.8, 20.1] },
-  { name: "Haaland",  price: 22.31, delta: 0.030, spark: [21.5, 21.8, 22.0, 21.7, 22.2, 22.4, 22.3, 22.3] },
-  { name: "Messi",    price: 27.45, delta: -0.012, spark: [27.9, 27.8, 27.6, 27.7, 27.5, 27.4, 27.5, 27.45] },
-  { name: "LeBron",   price: 16.20, delta: 0.018, spark: [15.8, 15.9, 16.0, 16.1, 16.0, 16.2, 16.1, 16.2] },
-  { name: "Curry",    price: 19.99, delta: -0.024, spark: [20.5, 20.3, 20.1, 20.2, 20.0, 19.9, 20.0, 19.99] },
-  { name: "Allen",    price: 14.50, delta: 0.044, spark: [13.8, 13.9, 14.1, 14.2, 14.3, 14.4, 14.5, 14.5] },
-  { name: "Giannis",  price: 24.50, delta: 0.038, spark: [23.5, 23.7, 23.9, 24.0, 24.2, 24.3, 24.4, 24.5] },
-  { name: "Garrett",  price: 13.10, delta: -0.018, spark: [13.4, 13.3, 13.2, 13.1, 13.0, 13.05, 13.1, 13.1] },
+  { name: "Mbappé",     price: 31.00, delta: 0.062, spark: [29.2, 29.6, 30.0, 30.3, 30.5, 30.7, 30.9, 31.0] },
+  { name: "Mahomes",    price: 20.10, delta: 0.052, spark: [18, 18.4, 19.1, 18.8, 19.6, 20.2, 19.8, 20.1] },
+  { name: "Yamal",      price: 22.50, delta: 0.084, spark: [20.5, 20.9, 21.3, 21.6, 22.0, 22.3, 22.4, 22.5] },
+  { name: "Wemby",      price: 24.20, delta: 0.061, spark: [22.5, 22.8, 23.2, 23.6, 23.9, 24.0, 24.1, 24.2] },
+  { name: "SGA",        price: 25.80, delta: 0.045, spark: [24.5, 24.7, 25.0, 25.2, 25.4, 25.6, 25.7, 25.8] },
+  { name: "Vinicius",   price: 27.00, delta: 0.041, spark: [25.8, 26.1, 26.4, 26.6, 26.8, 26.9, 27.0, 27.0] },
+  { name: "Haaland",    price: 22.31, delta: 0.030, spark: [21.5, 21.8, 22.0, 21.7, 22.2, 22.4, 22.3, 22.3] },
+  { name: "Daniels",    price: 17.60, delta: 0.071, spark: [16.0, 16.3, 16.6, 16.9, 17.1, 17.3, 17.5, 17.6] },
+  { name: "Musiala",    price: 24.00, delta: 0.038, spark: [22.8, 23.0, 23.2, 23.5, 23.7, 23.9, 23.95, 24.0] },
+  { name: "Wirtz",      price: 23.20, delta: 0.052, spark: [21.5, 21.9, 22.2, 22.5, 22.7, 22.9, 23.1, 23.2] },
+  { name: "Bellingham", price: 21.80, delta: 0.029, spark: [20.5, 20.8, 21.0, 21.2, 21.4, 21.6, 21.7, 21.8] },
+  { name: "Saka",       price: 23.50, delta: 0.033, spark: [22.3, 22.5, 22.7, 23.0, 23.1, 23.3, 23.4, 23.5] },
+  { name: "Foden",      price: 22.00, delta: 0.018, spark: [21.4, 21.5, 21.7, 21.8, 21.9, 21.95, 22.0, 22.0] },
+  { name: "Palmer",     price: 19.50, delta: 0.046, spark: [18.2, 18.4, 18.7, 19.0, 19.2, 19.3, 19.4, 19.5] },
+  { name: "Giannis",    price: 24.50, delta: 0.025, spark: [23.5, 23.7, 23.9, 24.0, 24.2, 24.3, 24.4, 24.5] },
+  { name: "Bijan",      price: 16.90, delta: 0.054, spark: [15.5, 15.8, 16.0, 16.3, 16.5, 16.7, 16.8, 16.9] },
+  { name: "Edwards",    price: 17.80, delta: -0.018, spark: [18.2, 18.0, 17.9, 17.8, 17.85, 17.9, 17.8, 17.8] },
 ];
 
 export function MarqueeTicker() {
