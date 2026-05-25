@@ -240,6 +240,7 @@ export default function AthletePageClient({ athlete }: { athlete: Athlete }) {
               price={price.currentPrice}
               sessionDelta={sessionDelta}
             />
+            <StatStrip slug={athlete.slug} history={sessionHistory} />
             <PriceChart
               history={displayHistory}
               frame={frame}
@@ -552,6 +553,86 @@ function TerminalMetaStrip({
         <span style={{ color: tokens.textMute, fontVariantNumeric: "tabular-nums" }}>
           {secondsAgo}s ago
         </span>
+      </div>
+    </div>
+  );
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+//  STAT STRIP — 24h Volume · High · Low under the hero
+//
+//  Volume is synthetic + deterministic per slug. High/Low track the actual
+//  session price min/max — they reflect real movement as events fire.
+// ─────────────────────────────────────────────────────────────────────────────
+function syntheticVolume(slug: string): number {
+  let h = 2166136261;
+  for (let i = 0; i < slug.length; i++) {
+    h ^= slug.charCodeAt(i);
+    h = Math.imul(h, 16777619);
+  }
+  // Stable range: $80K – $2.2M
+  return 80_000 + ((h >>> 0) % 2_120_000);
+}
+
+function fmtMoneyShort(n: number): string {
+  if (n >= 1_000_000) return `$${(n / 1_000_000).toFixed(2)}M`;
+  if (n >= 1_000) return `$${(n / 1_000).toFixed(0)}K`;
+  return `$${n.toFixed(0)}`;
+}
+
+function StatStrip({ slug, history }: { slug: string; history: HistoryPoint[] }) {
+  if (history.length < 2) return null;
+  const prices = history.map((h) => h.p);
+  const high = Math.max(...prices);
+  const low = Math.min(...prices);
+  const volume = syntheticVolume(slug);
+
+  return (
+    <div className="grid grid-cols-3 gap-3">
+      <StatCell label="24h Volume" value={fmtMoneyShort(volume)} />
+      <StatCell label="24h High" value={`$${high.toFixed(2)}`} tone={tokens.winText} />
+      <StatCell label="24h Low" value={`$${low.toFixed(2)}`} tone={tokens.loss} />
+    </div>
+  );
+}
+
+function StatCell({
+  label,
+  value,
+  tone,
+}: {
+  label: string;
+  value: string;
+  tone?: string;
+}) {
+  return (
+    <div
+      className="rounded-xl px-5 py-4"
+      style={{
+        background: tokens.glass,
+        backdropFilter: "blur(20px) saturate(140%)",
+        WebkitBackdropFilter: "blur(20px) saturate(140%)",
+        border: `1px solid ${tokens.border}`,
+        boxShadow: "0 1px 0 rgba(255,255,255,0.06) inset, 0 8px 24px rgba(0,0,0,0.3)",
+      }}
+    >
+      <div
+        className="text-[10px] uppercase tracking-[0.22em] mb-2"
+        style={{ color: tokens.textDim, fontFamily: FONT_MONO }}
+      >
+        {label}
+      </div>
+      <div
+        style={{
+          fontFamily: FONT_MONO,
+          fontSize: 22,
+          fontWeight: 700,
+          fontVariantNumeric: "tabular-nums",
+          letterSpacing: "-0.01em",
+          color: tone ?? tokens.text,
+        }}
+      >
+        {value}
       </div>
     </div>
   );
