@@ -2,7 +2,7 @@ import { z } from "zod";
 
 // US states where Topdraft cannot operate at MVP (DFS-restricted or otherwise).
 // Maintained as an explicit allow-list to fail closed.
-const US_STATE_ALLOWLIST = [
+export const US_STATE_ALLOWLIST = [
   "AL","AK","AR","CA","CO","DC","FL","GA","IL","IN","KS","KY","MA","MD","ME","MI",
   "MN","MO","NC","ND","NE","NH","NJ","NM","NY","OH","OK","OR","PA","RI","SC","SD",
   "TN","TX","UT","VA","VT","WI","WV","WY",

@@ -2,23 +2,37 @@ import { type NextRequest, NextResponse } from "next/server";
 import { createServerClient, type CookieOptions } from "@supabase/ssr";
 
 /**
+ * Routes that require AAL2 (signed in + MFA verified).
+ * Unauthed → /login?next=<path>. AAL1 → /auth/mfa?next=<path>.
+ */
+const PROTECTED_PREFIXES = ["/app", "/portfolio", "/leaderboard", "/live", "/quest"];
+const PROTECTED_API_PREFIXES = ["/api/trade"];
+
+function isProtectedPath(pathname: string): boolean {
+  if (PROTECTED_PREFIXES.some((p) => pathname === p || pathname.startsWith(`${p}/`))) {
+    return true;
+  }
+  if (PROTECTED_API_PREFIXES.some((p) => pathname.startsWith(p))) return true;
+  return false;
+}
+
+/**
  * Edge middleware runs on every request matched by `config.matcher`.
  *
  * Responsibilities:
  *   1. Refresh the Supabase auth cookie so server components see fresh tokens.
- *   2. Apply a coarse, per-IP backstop on /api/* (every route additionally
- *      enforces its own per-user limiter inside the handler).
- *
- * Note: the @upstash/ratelimit SDK uses a Node fetch impl; we keep middleware
- * on the default (Edge) runtime by restricting it to a redis REST call.
+ *   2. Gate protected routes behind AAL2 (signed in + MFA verified).
+ *   3. Apply a coarse, per-IP backstop on /api/*.
  */
 export async function middleware(request: NextRequest) {
   let response = NextResponse.next({ request });
+  const pathname = request.nextUrl.pathname;
 
-  // Gracefully skip Supabase session refresh when env vars are not configured
-  // (e.g. preview deployments that haven't had secrets injected yet).
   const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
   const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY;
+
+  let aal: "aal1" | "aal2" | null = null;
+  let userId: string | null = null;
 
   if (supabaseUrl && supabaseAnonKey) {
     try {
@@ -37,15 +51,47 @@ export async function middleware(request: NextRequest) {
         },
       });
       // Refreshes the session if needed and propagates the cookies onto `response`.
-      await supabase.auth.getUser();
+      const { data: { user } } = await supabase.auth.getUser();
+      userId = user?.id ?? null;
+
+      if (user) {
+        const { data: claims } = await supabase.auth.getClaims();
+        aal = (claims?.claims?.aal as "aal1" | "aal2" | undefined) ?? "aal1";
+      }
     } catch {
-      // Fail open — a session refresh error should not block the request.
+      // Fail open on session-refresh errors — gating below handles unauthed case.
     }
   }
 
-  // Coarse backstop on /api/* — 240 req/min per IP. Per-route limiters apply
-  // tighter quotas inside each handler.
-  if (request.nextUrl.pathname.startsWith("/api/")) {
+  // AAL gate — applies to both pages and protected API routes.
+  if (isProtectedPath(pathname)) {
+    if (!userId) {
+      // Protected API → 401 JSON. Protected page → redirect to /login.
+      if (pathname.startsWith("/api/")) {
+        return new Response(JSON.stringify({ error: "unauthorized" }), {
+          status: 401,
+          headers: { "Content-Type": "application/json" },
+        });
+      }
+      const dest = new URL("/login", request.url);
+      dest.searchParams.set("next", pathname + request.nextUrl.search);
+      return NextResponse.redirect(dest);
+    }
+    if (aal !== "aal2") {
+      if (pathname.startsWith("/api/")) {
+        return new Response(JSON.stringify({ error: "mfa_required" }), {
+          status: 401,
+          headers: { "Content-Type": "application/json" },
+        });
+      }
+      const dest = new URL("/auth/mfa", request.url);
+      dest.searchParams.set("next", pathname + request.nextUrl.search);
+      return NextResponse.redirect(dest);
+    }
+  }
+
+  // Coarse backstop on /api/* — 240 req/min per IP.
+  if (pathname.startsWith("/api/")) {
     const block = await edgeBackstop(request);
     if (block) return block;
   }

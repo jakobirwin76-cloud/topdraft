@@ -63,7 +63,7 @@ export default function LandingPage() {
             </p>
             <div className="flex flex-col sm:flex-row gap-3 max-w-md">
               <Link
-                href="/app"
+                href="/demo"
                 className="inline-flex items-center justify-center gap-2 bg-accent hover:bg-accent-2 text-white font-semibold text-base rounded-lg px-7 py-3.5 transition-base shadow-[0_0_32px_rgba(109,40,217,0.35)]"
               >
                 Try the demo
@@ -219,7 +219,7 @@ export default function LandingPage() {
           </div>
           <p className="mt-6 text-xs text-text-dim font-data tabular-nums uppercase tracking-[0.18em]">
             Or skip the line —{" "}
-            <Link href="/app" className="text-accent hover:text-accent-2 underline underline-offset-4">
+            <Link href="/demo" className="text-accent hover:text-accent-2 underline underline-offset-4">
               try the demo →
             </Link>
           </p>
