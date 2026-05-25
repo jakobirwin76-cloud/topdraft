@@ -147,7 +147,7 @@ const NFL_QB_POOL: StatEventDef[] = [
   { code: "INCOMPLETION",  label: "Incompletion",        pctImpact: -0.0020, weight: 16, positive: false },
 ];
 
-// RB · Christian McCaffrey
+// RB · Christian McCaffrey · Saquon Barkley · Bijan Robinson
 const NFL_RB_POOL: StatEventDef[] = [
   { code: "RUSH",          label: "Rushing yards",       pctImpact:  0.0030, weight: 16, positive: true  },
   { code: "REC",           label: "Receiving yards",     pctImpact:  0.0040, weight: 8,  positive: true  },
@@ -155,18 +155,21 @@ const NFL_RB_POOL: StatEventDef[] = [
   { code: "BROKEN_TACKLE", label: "Broken tackle",       pctImpact:  0.0015, weight: 10, positive: true  },
   { code: "FUMBLE_LOST",   label: "Fumble lost",         pctImpact: -0.0150, weight: 2,  positive: false },
   { code: "FUMBLE_REC",    label: "Fumble (recovered)",  pctImpact: -0.0050, weight: 3,  positive: false },
-  { code: "TFL",           label: "Tackled for loss",    pctImpact: -0.0030, weight: 10, positive: false },
+  { code: "TFL",           label: "Tackled for loss",    pctImpact: -0.0040, weight: 14, positive: false },
+  { code: "STUFFED",       label: "Stuffed at the line", pctImpact: -0.0020, weight: 14, positive: false },
 ];
 
-// WR · Justin Jefferson
+// WR/TE · Justin Jefferson · Tyreek Hill · CeeDee Lamb · Marvin Harrison Jr · Brock Bowers
 const NFL_WR_POOL: StatEventDef[] = [
   { code: "REC_YDS",       label: "Receiving yards",     pctImpact:  0.0048, weight: 16, positive: true  },
   { code: "RECEPTION",     label: "Reception",           pctImpact:  0.0030, weight: 14, positive: true  },
   { code: "TD",            label: "Touchdown",           pctImpact:  0.0135, weight: 6,  positive: true  },
   { code: "BIG_PLAY",      label: "20+ yard big play",   pctImpact:  0.0040, weight: 8,  positive: true  },
-  { code: "DROP",          label: "Drop",                pctImpact: -0.0050, weight: 6,  positive: false },
+  { code: "DROP",          label: "Drop",                pctImpact: -0.0050, weight: 10, positive: false },
   { code: "FUMBLE_LOST",   label: "Fumble lost",         pctImpact: -0.0125, weight: 2,  positive: false },
-  { code: "TFL",           label: "Tackled for loss",    pctImpact: -0.0020, weight: 8,  positive: false },
+  { code: "TFL",           label: "Tackled for loss",    pctImpact: -0.0020, weight: 12, positive: false },
+  { code: "INCOMPLETE",    label: "Incomplete target",   pctImpact: -0.0035, weight: 20, positive: false },
+  { code: "BLANKETED",     label: "Blanketed in cover",  pctImpact: -0.0025, weight: 12, positive: false },
 ];
 
 // OL · Penei Sewell
@@ -179,14 +182,17 @@ const NFL_OL_POOL: StatEventDef[] = [
   { code: "PENALTY_OL",    label: "Holding / false start", pctImpact: -0.0040, weight: 4,  positive: false },
 ];
 
-// DL/EDGE · Myles Garrett
+// DL/EDGE · Myles Garrett · Micah Parsons · T.J. Watt · Aidan Hutchinson
 const NFL_DL_POOL: StatEventDef[] = [
   { code: "SACK",          label: "Sack",                pctImpact:  0.0150, weight: 4,  positive: true  },
   { code: "QB_HIT",        label: "QB hit",              pctImpact:  0.0050, weight: 10, positive: true  },
   { code: "TFL_DL",        label: "Tackle for loss",     pctImpact:  0.0060, weight: 10, positive: true  },
   { code: "FORCED_FUMBLE", label: "Forced fumble",       pctImpact:  0.0100, weight: 2,  positive: true  },
-  { code: "OFFSIDE",       label: "Offside/encroachment",pctImpact: -0.0035, weight: 6,  positive: false },
-  { code: "MISSED_TACKLE", label: "Missed tackle",       pctImpact: -0.0025, weight: 8,  positive: false },
+  { code: "OFFSIDE",       label: "Offside/encroachment",pctImpact: -0.0035, weight: 8,  positive: false },
+  { code: "MISSED_TACKLE", label: "Missed tackle",       pctImpact: -0.0030, weight: 10, positive: false },
+  { code: "BLOCKED_RUSH",  label: "Blocked at rush",     pctImpact: -0.0025, weight: 16, positive: false },
+  { code: "HELD_NO_FLAG",  label: "Held, no flag",       pctImpact: -0.0015, weight: 14, positive: false },
+  { code: "RUN_FIT_LOSS",  label: "Run lane busted",     pctImpact: -0.0030, weight: 8,  positive: false },
 ];
 
 // CB · Sauce Gardner
