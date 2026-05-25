@@ -1,6 +1,37 @@
 import { z } from "zod";
 
 /**
+ * Back-compat shim: Supabase renamed the browser-side key from
+ * NEXT_PUBLIC_SUPABASE_ANON_KEY → NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY. Older
+ * Netlify / Vercel / .env files use the legacy name. Copy across so either
+ * works.
+ *
+ * Server-only — runs at module load before zod sees the env.
+ */
+if (
+  typeof process !== "undefined" &&
+  process.env &&
+  !process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY &&
+  process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
+) {
+  process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY =
+    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
+}
+
+// Sensible default for NEXT_PUBLIC_APP_URL — production should override, but
+// don't fail closed if it's missing.
+if (
+  typeof process !== "undefined" &&
+  process.env &&
+  !process.env.NEXT_PUBLIC_APP_URL
+) {
+  process.env.NEXT_PUBLIC_APP_URL =
+    process.env.URL ?? // Netlify provides URL automatically
+    process.env.VERCEL_URL ??
+    "https://topdrafts.app";
+}
+
+/**
  * Validate environment variables at module load. Server-only.
  *
  * Required: app won't start without these.
@@ -46,11 +77,13 @@ export type Env = z.infer<typeof ServerEnv>;
  * to the client).
  */
 export function isEnvReady(): boolean {
+  const publishable =
+    process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY ||
+    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
   return !!(
     process.env.NEXT_PUBLIC_SUPABASE_URL &&
-    process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY &&
+    publishable &&
     process.env.SUPABASE_SERVICE_ROLE_KEY &&
-    process.env.NEXT_PUBLIC_APP_URL &&
     process.env.UPSTASH_REDIS_REST_URL &&
     process.env.UPSTASH_REDIS_REST_TOKEN
   );

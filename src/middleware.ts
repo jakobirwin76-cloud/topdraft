@@ -29,7 +29,9 @@ export async function middleware(request: NextRequest) {
   const pathname = request.nextUrl.pathname;
 
   const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
-  const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY;
+  const supabaseAnonKey =
+    process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY ??
+    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
 
   let aal: "aal1" | "aal2" | null = null;
   let userId: string | null = null;
