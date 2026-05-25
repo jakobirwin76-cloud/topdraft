@@ -56,21 +56,33 @@ export async function POST(req: Request) {
     return serverError("Could not join waitlist");
   }
 
-  // Build and sign the email-verification token.
-  const verifyPayload = buildVerificationPayload(row.id, row.email);
-  const token = signWaitlistToken(verifyPayload, env.get().APP_WAITLIST_SECRET ?? "");
-  const verifyUrl = `${env.get().NEXT_PUBLIC_APP_URL}/api/waitlist/verify?token=${encodeURIComponent(token)}`;
+  // Build the verification token — skip gracefully if APP_WAITLIST_SECRET
+  // is missing/short rather than crashing the whole signup. The user is
+  // already on the waitlist; the verification email is a follow-up.
   const referralUrl = `${env.get().NEXT_PUBLIC_APP_URL}/w/${row.referral_code}`;
-
+  let verifyUrl: string | null = null;
   try {
-    await sendWaitlistWelcome({
-      to: row.email,
-      verifyUrl,
-      position: Number(row.position),
-      referralUrl,
-    });
+    const secret = env.get().APP_WAITLIST_SECRET ?? "";
+    if (secret.length >= 32) {
+      const verifyPayload = buildVerificationPayload(row.id, row.email);
+      const token = signWaitlistToken(verifyPayload, secret);
+      verifyUrl = `${env.get().NEXT_PUBLIC_APP_URL}/api/waitlist/verify?token=${encodeURIComponent(token)}`;
+    }
   } catch {
-    // Email failure is non-fatal — the user already has a row. Surface a soft warning.
+    // Token signing failed — continue. Email will be skipped below.
+  }
+
+  if (verifyUrl) {
+    try {
+      await sendWaitlistWelcome({
+        to: row.email,
+        verifyUrl,
+        position: Number(row.position),
+        referralUrl,
+      });
+    } catch {
+      // Email failure is non-fatal — the user already has a row.
+    }
   }
 
   // Clear the referrer cookie now that we've consumed it.

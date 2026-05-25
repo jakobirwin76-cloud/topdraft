@@ -1,11 +1,9 @@
 import Link from "next/link";
 import { ArrowRight, Crown, Trophy, Zap } from "lucide-react";
-import { WaitlistForm } from "@/components/waitlist-form";
 import { Logo } from "@/components/logo";
 import { AnimatedTradeMock } from "@/components/landing/animated-trade-mock";
 import { FAQAccordion, type FAQItem } from "@/components/landing/faq-accordion";
 import { ScrollReveal } from "@/components/landing/scroll-reveal";
-import { getServiceSupabase } from "@/lib/supabase/server";
 
 export const revalidate = 60;
 
@@ -17,9 +15,7 @@ export const metadata = {
 
 const LABEL = "font-medium text-xs uppercase tracking-[0.05em] text-text-mute";
 
-export default async function LandingPage() {
-  const total = await getWaitlistCount();
-
+export default function LandingPage() {
   return (
     <main className="min-h-screen text-text">
       {/* ─────────── NAV ─────────── */}
@@ -42,7 +38,7 @@ export default async function LandingPage() {
         <div className="grid md:grid-cols-[1.15fr_1fr] gap-14 md:gap-20 items-center">
           <div>
             <div className={`${LABEL} mb-6`}>
-              Waitlist
+              Live now · Play money
             </div>
             <h1
               className="text-[48px] md:text-[96px] leading-[1.05] mb-7 md:mb-10 uppercase"
@@ -62,30 +58,22 @@ export default async function LandingPage() {
               for free.
             </h1>
             <p className="text-base md:text-lg text-text-mute leading-relaxed mb-10 md:mb-12 max-w-md">
-              Buy fractional shares of athletes. Trade live on every play. Play money only — top
-              1,000 get a permanent Founder badge.
+              Buy fractional shares of athletes. Trade live on every play. Play money only. 18+.
             </p>
-            <div className="max-w-md">
-              <WaitlistForm />
+            <div className="flex flex-col sm:flex-row gap-3 max-w-md">
               <Link
                 href="/athlete/mahomes"
-                className="mt-4 inline-flex items-center gap-1.5 text-sm text-text-mute hover:text-accent transition-base group"
+                className="inline-flex items-center justify-center gap-2 bg-accent hover:bg-accent-2 text-white font-semibold text-base rounded-lg px-7 py-3.5 transition-base shadow-[0_0_32px_rgba(109,40,217,0.35)]"
               >
-                <span className="text-accent group-hover:text-accent-2">→</span>
-                <span className="underline underline-offset-4 decoration-text-dim group-hover:decoration-accent">
-                  Try the live demo first
-                </span>
-                <ArrowRight className="w-3.5 h-3.5 opacity-0 group-hover:opacity-100 -ml-1 group-hover:ml-0 transition-all" strokeWidth={2.5} />
+                Try the demo
+                <ArrowRight className="w-4 h-4" strokeWidth={2.5} />
               </Link>
-            </div>
-            <div className="mt-6 text-sm text-text-mute font-data tabular-nums">
-              {total > 0 ? (
-                <>
-                  <span className="text-text">{total.toLocaleString()}</span> sports fans on the list
-                </>
-              ) : (
-                <>Be one of the first to lock in a Founder badge</>
-              )}
+              <Link
+                href="/app"
+                className="inline-flex items-center justify-center gap-2 border border-border hover:border-text-mute hover:bg-surface text-text font-semibold text-base rounded-lg px-7 py-3.5 transition-base"
+              >
+                Browse athletes
+              </Link>
             </div>
           </div>
           <div className="hidden md:block card-shine">
@@ -215,7 +203,7 @@ export default async function LandingPage() {
       </section>
 
       {/* ─────────── FINAL CTA ─────────── */}
-      <section id="waitlist" className="border-t border-border bg-surface/40 scroll-mt-20">
+      <section className="border-t border-border bg-surface/40">
         <div className="px-5 md:px-12 py-24 md:py-32 max-w-2xl mx-auto text-center">
           <h2 className="font-display font-extrabold text-5xl md:text-7xl leading-[0.95] tracking-[-0.035em] mb-7">
             Your sports IQ
@@ -223,20 +211,15 @@ export default async function LandingPage() {
             <span className="text-accent">is worth money.</span>
           </h2>
           <p className="text-base md:text-lg text-text-mute mb-12 max-w-lg mx-auto leading-relaxed">
-            Free to play. 18+. Top 1,000 lock in a Founder badge — first access at launch.
+            Free to play. 18+. Play money only.
           </p>
-          <div className="max-w-md mx-auto">
-            <WaitlistForm />
-          </div>
-          <div className="mt-6 text-sm text-text-mute font-data tabular-nums">
-            {total > 0 ? (
-              <>
-                <span className="text-text">{total.toLocaleString()}</span> sports fans on the list
-              </>
-            ) : (
-              <>Be one of the first to lock in a Founder badge</>
-            )}
-          </div>
+          <Link
+            href="/athlete/mahomes"
+            className="inline-flex items-center justify-center gap-2 bg-accent hover:bg-accent-2 text-white font-semibold text-base rounded-lg px-8 py-4 transition-base shadow-[0_0_32px_rgba(109,40,217,0.35)]"
+          >
+            Try the demo
+            <ArrowRight className="w-4 h-4" strokeWidth={2.5} />
+          </Link>
         </div>
       </section>
 
@@ -255,17 +238,6 @@ export default async function LandingPage() {
   );
 }
 
-async function getWaitlistCount(): Promise<number> {
-  try {
-    const sb = getServiceSupabase();
-    const { count } = await sb
-      .from("waitlist")
-      .select("id", { count: "exact", head: true });
-    return count ?? 0;
-  } catch {
-    return 0;
-  }
-}
 
 const TRUST_PILLS = [
   "$0 to play · ever",

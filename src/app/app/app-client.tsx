@@ -86,7 +86,17 @@ export default function AppHomeClient({ athletes }: { athletes: Athlete[] }) {
           >
             Pick a player.
             <br />
-            <span style={{ color: tokens.textMute }}>Trade their next play.</span>
+            <span
+              style={{
+                background: `linear-gradient(135deg, ${tokens.accent} 0%, #A855F7 50%, ${tokens.accentDeep} 100%)`,
+                WebkitBackgroundClip: "text",
+                backgroundClip: "text",
+                color: "transparent",
+                WebkitTextFillColor: "transparent",
+              }}
+            >
+              Trade their next play.
+            </span>
           </h1>
           <p
             className="mt-5 max-w-lg text-base md:text-lg leading-relaxed"
@@ -364,18 +374,43 @@ function TopMoverCard({ athlete, delta }: { athlete: Athlete; delta: number }) {
 function RadialBackgrounds() {
   return (
     <div className="pointer-events-none fixed inset-0 z-0" aria-hidden="true">
+      {/* Base purple wash — covers the whole canvas at low opacity */}
       <div
-        className="absolute -top-32 -left-32 h-[40rem] w-[40rem] rounded-full opacity-40"
+        className="absolute inset-0"
         style={{
-          background: `radial-gradient(circle, ${tokens.accent}33 0%, transparent 60%)`,
+          background: `linear-gradient(180deg, rgba(30, 6, 64, 0.4) 0%, rgba(9, 9, 11, 0) 60%), linear-gradient(135deg, rgba(139, 92, 246, 0.18) 0%, rgba(9, 9, 11, 0) 55%)`,
+        }}
+      />
+      {/* Top-left violet bloom */}
+      <div
+        className="absolute -top-40 -left-32 h-[44rem] w-[44rem] rounded-full opacity-70"
+        style={{
+          background: `radial-gradient(circle, rgba(139, 92, 246, 0.45) 0%, transparent 60%)`,
+          filter: "blur(90px)",
+        }}
+      />
+      {/* Top-right deep purple bloom */}
+      <div
+        className="absolute -top-32 right-0 h-[36rem] w-[36rem] rounded-full opacity-55"
+        style={{
+          background: `radial-gradient(circle, rgba(76, 29, 149, 0.5) 0%, transparent 60%)`,
           filter: "blur(80px)",
         }}
       />
+      {/* Bottom-right magenta-violet accent */}
       <div
-        className="absolute -bottom-40 -right-32 h-[36rem] w-[36rem] rounded-full opacity-30"
+        className="absolute -bottom-40 -right-32 h-[40rem] w-[40rem] rounded-full opacity-45"
         style={{
-          background: `radial-gradient(circle, ${tokens.win}33 0%, transparent 60%)`,
-          filter: "blur(80px)",
+          background: `radial-gradient(circle, rgba(168, 85, 247, 0.4) 0%, transparent 60%)`,
+          filter: "blur(90px)",
+        }}
+      />
+      {/* Mid-canvas obsidian-violet glow */}
+      <div
+        className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 h-[40rem] w-[70rem] opacity-35"
+        style={{
+          background: `radial-gradient(ellipse, rgba(30, 6, 64, 0.6) 0%, transparent 70%)`,
+          filter: "blur(110px)",
         }}
       />
     </div>

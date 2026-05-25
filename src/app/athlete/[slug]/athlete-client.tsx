@@ -273,7 +273,6 @@ export default function AthletePageClient({ athlete }: { athlete: Athlete }) {
         </div>
       </main>
 
-      <StickyWaitlistBar tradeCount={tradeCount} />
     </div>
   );
 }
