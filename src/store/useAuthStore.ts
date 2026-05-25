@@ -1,22 +1,28 @@
 "use client";
 
 import { create } from "zustand";
-import type { User } from "@supabase/supabase-js";
 
 /**
  * Client-side auth state. The source of truth is the Supabase session cookie
  * (refreshed by middleware); this store mirrors it for UI access.
  *
- * Set from a top-level <AuthProvider> client component that subscribes to
- * supabase.auth.onAuthStateChange.
+ * Set from a top-level <AuthProvider> client component that hydrates via
+ * /api/auth/session and subscribes to supabase.auth.onAuthStateChange.
+ *
+ * `user` is intentionally a minimal shape — we only need id + email in the UI.
  */
+export interface AuthUser {
+  id: string;
+  email: string | null;
+}
+
 export interface AuthState {
-  user: User | null;
+  user: AuthUser | null;
   profile: AuthProfile | null;
   aalLevel: "aal1" | "aal2" | null;
   isLoading: boolean;
 
-  setUser: (user: User | null) => void;
+  setUser: (user: AuthUser | null) => void;
   setProfile: (profile: AuthProfile | null) => void;
   setAal: (aal: AuthState["aalLevel"]) => void;
   setLoading: (loading: boolean) => void;
