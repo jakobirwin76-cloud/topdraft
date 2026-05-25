@@ -39,6 +39,35 @@ const ServerEnv = z.object({
 
 export type Env = z.infer<typeof ServerEnv>;
 
+/**
+ * Quick boolean check for whether all required env vars are present.
+ * Used by API routes to short-circuit with a clean JSON 503 instead of
+ * letting `env.get()` throw an HTML 500 (which surfaces as "Network error"
+ * to the client).
+ */
+export function isEnvReady(): boolean {
+  return !!(
+    process.env.NEXT_PUBLIC_SUPABASE_URL &&
+    process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY &&
+    process.env.SUPABASE_SERVICE_ROLE_KEY &&
+    process.env.NEXT_PUBLIC_APP_URL &&
+    process.env.UPSTASH_REDIS_REST_URL &&
+    process.env.UPSTASH_REDIS_REST_TOKEN
+  );
+}
+
+export function serviceUnconfiguredResponse(message?: string): Response {
+  return new Response(
+    JSON.stringify({
+      error: "service_unconfigured",
+      message:
+        message ??
+        "This feature is not available right now. Server credentials are missing.",
+    }),
+    { status: 503, headers: { "Content-Type": "application/json" } },
+  );
+}
+
 export const env = (() => {
   let cached: Env | null = null;
   return {

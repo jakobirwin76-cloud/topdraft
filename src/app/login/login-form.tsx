@@ -53,21 +53,36 @@ export function LoginForm() {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ email, password, turnstileToken }),
       });
-      const json = (await res.json()) as LoginResponse | { error: string; message?: string };
-      if (!res.ok || !("ok" in json)) {
-        const message = "message" in json && json.message ? json.message : "Login failed";
+
+      // Read the body as text first so we can surface non-JSON 5xx responses
+      // (e.g. a hard crash) instead of swallowing them as "Network error".
+      const text = await res.text();
+      let parsed: LoginResponse | { error?: string; message?: string } | null = null;
+      try {
+        parsed = text ? JSON.parse(text) : null;
+      } catch {
+        parsed = null;
+      }
+
+      if (!res.ok || !parsed || !("ok" in parsed)) {
+        const message =
+          (parsed && "message" in parsed && parsed.message) ||
+          (res.status >= 500
+            ? `Server error (${res.status}). Try again in a minute.`
+            : "Login failed");
         setState({ status: "error", message });
         return;
       }
-      if (json.mfaRequired && json.factorId) {
-        const qs = new URLSearchParams({ factorId: json.factorId, next });
+      if (parsed.mfaRequired && parsed.factorId) {
+        const qs = new URLSearchParams({ factorId: parsed.factorId, next });
         router.push(`/auth/mfa/challenge?${qs.toString()}`);
         return;
       }
       router.push(next);
       router.refresh();
-    } catch {
-      setState({ status: "error", message: "Network error. Try again." });
+    } catch (err) {
+      const message = err instanceof Error ? err.message : "Network error. Try again.";
+      setState({ status: "error", message });
     }
   }
 
