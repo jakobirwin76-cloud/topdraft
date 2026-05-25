@@ -30,6 +30,10 @@
 
 ## 1.1 Auth (BLOCKING — everything else needs a user)
 
+> Email/password + TOTP shipped 2026-05-26. Google + Apple Sign In deferred to
+> **Phase 1.6** — requires Apple Developer account ($99/yr). Apple Sign In is
+> mandatory if we add Google (App Store rule), so they ship together or not at all.
+
 - [ ] `/signup` page — email, password, displayName, DOB (18+ gate), state dropdown, Turnstile widget
 - [ ] `/login` page — email, password, Turnstile
 - [ ] `/auth/mfa/enroll` — QR code render via Supabase TOTP

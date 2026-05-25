@@ -189,6 +189,15 @@ The enroll page renders **all three**:
 3. "Or enter this code manually" — copy-button next to the base32 secret
 4. 6-digit input + Verify button
 
+### D5b. Google + Apple Sign In — deferred to Phase 1.6 (or Phase 2.3, whichever lands first)
+
+- 2026-05-26 — user asked about adding social auth, then chose to defer.
+- **Rule we're committing to:** if/when we add Google, we add Apple at the same time, never just Google alone (App Store rejection risk).
+- Prerequisites before adding either: Apple Developer account ($99/yr) + Apple Service ID + Sign In with Apple key, Google Cloud Console OAuth 2.0 client.
+- Schema implication: OAuth gives email + maybe display_name, but never DOB or state. A `/auth/complete-profile` page collects those on first sign-in before creating the `profiles` row.
+- TOTP MFA stays required even for OAuth users (Apple/Google MFA is not trusted as our AAL2 — same gate for everyone).
+- Apple Private Relay (`*@privaterelay.appleid.com`) must be accepted as a valid email.
+
 ### D5. What's NOT in this PR for App Store (deferred to Phase 2.3 — Capacitor shell)
 
 - Universal Links (iOS) / App Links (Android) — needed so the email-verification link opens the app, not Safari. Today, `/auth/callback` works as a normal route, which is the foundation both platforms will use.
