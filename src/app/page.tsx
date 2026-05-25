@@ -62,17 +62,17 @@ export default function LandingPage() {
             </p>
             <div className="flex flex-col sm:flex-row gap-3 max-w-md">
               <Link
-                href="/athlete/mahomes"
+                href="/app"
                 className="inline-flex items-center justify-center gap-2 bg-accent hover:bg-accent-2 text-white font-semibold text-base rounded-lg px-7 py-3.5 transition-base shadow-[0_0_32px_rgba(109,40,217,0.35)]"
               >
                 Try the demo
                 <ArrowRight className="w-4 h-4" strokeWidth={2.5} />
               </Link>
               <Link
-                href="/app"
+                href="/athlete/mahomes"
                 className="inline-flex items-center justify-center gap-2 border border-border hover:border-text-mute hover:bg-surface text-text font-semibold text-base rounded-lg px-7 py-3.5 transition-base"
               >
-                Browse athletes
+                Featured: Mahomes
               </Link>
             </div>
           </div>
@@ -214,7 +214,7 @@ export default function LandingPage() {
             Free to play. 18+. Play money only.
           </p>
           <Link
-            href="/athlete/mahomes"
+            href="/app"
             className="inline-flex items-center justify-center gap-2 bg-accent hover:bg-accent-2 text-white font-semibold text-base rounded-lg px-8 py-4 transition-base shadow-[0_0_32px_rgba(109,40,217,0.35)]"
           >
             Try the demo
