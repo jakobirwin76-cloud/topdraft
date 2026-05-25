@@ -3,7 +3,7 @@
 import { useState, useId } from "react";
 import { useRouter } from "next/navigation";
 import Script from "next/script";
-import { Loader2, ArrowRight } from "lucide-react";
+import { Loader2, ArrowRight, ChevronDown } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { US_STATE_ALLOWLIST } from "@/lib/zod";
 
@@ -123,26 +123,41 @@ export function SignupForm() {
               required
               max={maxDob}
               disabled={state.status === "submitting"}
+              onClick={(e) => {
+                // Desktop browsers don't auto-open the native picker on click —
+                // force it so the field behaves the way users expect.
+                const el = e.currentTarget as HTMLInputElement & {
+                  showPicker?: () => void;
+                };
+                el.showPicker?.();
+              }}
+              className="cursor-pointer"
             />
           </Field>
           <Field id={ids.state} label="State">
-            <select
-              id={ids.state}
-              name="stateCode"
-              required
-              disabled={state.status === "submitting"}
-              defaultValue=""
-              className="w-full bg-bg border border-border rounded-lg px-4 py-3 text-text focus:outline-none focus:border-accent focus:ring-2 focus:ring-accent/20 disabled:opacity-50"
-            >
-              <option value="" disabled>
-                —
-              </option>
-              {US_STATE_ALLOWLIST.map((s) => (
-                <option key={s} value={s}>
-                  {s}
+            <div className="relative">
+              <select
+                id={ids.state}
+                name="stateCode"
+                required
+                disabled={state.status === "submitting"}
+                defaultValue=""
+                className="w-full appearance-none bg-bg border border-border rounded-lg pl-4 pr-10 py-3 text-text focus:outline-none focus:border-accent focus:ring-2 focus:ring-accent/20 disabled:opacity-50 cursor-pointer"
+              >
+                <option value="" disabled>
+                  Choose…
                 </option>
-              ))}
-            </select>
+                {US_STATE_ALLOWLIST.map((s) => (
+                  <option key={s} value={s}>
+                    {s}
+                  </option>
+                ))}
+              </select>
+              <ChevronDown
+                className="w-4 h-4 text-text-mute absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none"
+                strokeWidth={2}
+              />
+            </div>
           </Field>
         </div>
 
