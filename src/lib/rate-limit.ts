@@ -36,11 +36,12 @@ export const limiters = {
       prefix: "rl:trade",
     }),
 
-  // Auth: max 5 attempts per 5 min per IP. Blocks credential stuffing.
+  // Auth: max 20 attempts per 5 min per IP. Blocks credential stuffing without
+  // breaking real users who fumble passwords or share IPs (NAT, office, family).
   auth: () =>
     new Ratelimit({
       redis: getRedis(),
-      limiter: Ratelimit.slidingWindow(5, "300 s"),
+      limiter: Ratelimit.slidingWindow(20, "300 s"),
       analytics: true,
       prefix: "rl:auth",
     }),
@@ -54,11 +55,13 @@ export const limiters = {
       prefix: "rl:chat",
     }),
 
-  // Signup: max 3 per IP per hour. Anti-Sybil.
+  // Signup: max 30 per IP per hour. Anti-Sybil while leaving room for shared
+  // IPs (households, offices, mobile carriers, dorms) and testing. Drop back
+  // to 10 once we see real abuse patterns in production.
   signup: () =>
     new Ratelimit({
       redis: getRedis(),
-      limiter: Ratelimit.slidingWindow(3, "3600 s"),
+      limiter: Ratelimit.slidingWindow(30, "3600 s"),
       analytics: true,
       prefix: "rl:signup",
     }),
