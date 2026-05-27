@@ -88,7 +88,10 @@ export function SignupForm() {
         router.push(`/login?email=${encodeURIComponent(body.email)}`);
         return;
       }
-      router.push("/auth/mfa");
+      // MVP — skip MFA enroll. Land users on /app directly. They can enroll
+      // TOTP later from settings (when settings page ships) or we re-add the
+      // mandatory enroll step at App Store / real-money launch.
+      router.push("/app");
       router.refresh();
     } catch (err) {
       const message = err instanceof Error ? err.message : "Network error. Try again.";
