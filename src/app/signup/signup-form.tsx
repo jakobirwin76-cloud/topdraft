@@ -51,17 +51,48 @@ export function SignupForm() {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(body),
       });
-      const json = (await res.json()) as
-        | { ok: true; message: string }
-        | { error: string; message?: string; details?: unknown };
-      if (!res.ok || !("ok" in json)) {
-        const message = "message" in json && json.message ? json.message : "Signup failed";
+      const text = await res.text();
+      let parsed:
+        | { ok: true; email?: string }
+        | { error?: string; message?: string; details?: unknown }
+        | null = null;
+      try {
+        parsed = text ? JSON.parse(text) : null;
+      } catch {
+        parsed = null;
+      }
+      if (!res.ok || !parsed || !("ok" in parsed)) {
+        const message =
+          (parsed && "message" in parsed && parsed.message) ||
+          (res.status >= 500
+            ? `Server error (${res.status}). Try again in a minute.`
+            : "Signup failed");
         setState({ status: "error", message });
         return;
       }
-      router.push(`/auth/verify-email?email=${encodeURIComponent(body.email)}`);
-    } catch {
-      setState({ status: "error", message: "Network error. Try again." });
+
+      // Account is already email-confirmed (MVP — see signup route). Log the
+      // user in immediately so they land on MFA enroll without an email step.
+      const loginRes = await fetch("/api/auth/login", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          email: body.email,
+          password: body.password,
+          turnstileToken: body.turnstileToken,
+        }),
+      });
+      if (!loginRes.ok) {
+        // Signup succeeded but auto-login failed — send them to /login so they
+        // can complete sign-in manually.
+        router.push(`/login?email=${encodeURIComponent(body.email)}`);
+        return;
+      }
+      router.push("/auth/mfa");
+      router.refresh();
+    } catch (err) {
+      const message = err instanceof Error ? err.message : "Network error. Try again.";
+      setState({ status: "error", message });
     }
   }
 
