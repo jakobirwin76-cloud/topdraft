@@ -2,39 +2,24 @@ import { type NextRequest, NextResponse } from "next/server";
 import { createServerClient, type CookieOptions } from "@supabase/ssr";
 
 /**
- * Routes that require AAL2 (signed in + MFA verified).
- * Unauthed → /login?next=<path>. AAL1 → /auth/mfa?next=<path>.
- */
-const PROTECTED_PREFIXES = ["/app", "/portfolio", "/leaderboard", "/live", "/quest"];
-const PROTECTED_API_PREFIXES = ["/api/trade"];
-
-function isProtectedPath(pathname: string): boolean {
-  if (PROTECTED_PREFIXES.some((p) => pathname === p || pathname.startsWith(`${p}/`))) {
-    return true;
-  }
-  if (PROTECTED_API_PREFIXES.some((p) => pathname.startsWith(p))) return true;
-  return false;
-}
-
-/**
  * Edge middleware runs on every request matched by `config.matcher`.
  *
  * Responsibilities:
  *   1. Refresh the Supabase auth cookie so server components see fresh tokens.
- *   2. Gate protected routes behind AAL2 (signed in + MFA verified).
- *   3. Apply a coarse, per-IP backstop on /api/*.
+ *   2. Apply a coarse, per-IP backstop on /api/*.
+ *
+ * Note: AAL2 enforcement happens at the **page level** (server components
+ * check `supabase.auth.getClaims()` and redirect) rather than here. Edge
+ * middleware that throws crashes the entire site with ERR_CONNECTION_RESET,
+ * so we keep this surface minimal and fail open on everything.
  */
 export async function middleware(request: NextRequest) {
   let response = NextResponse.next({ request });
-  const pathname = request.nextUrl.pathname;
 
   const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
   const supabaseAnonKey =
     process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY ??
     process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
-
-  let aal: "aal1" | "aal2" | null = null;
-  let userId: string | null = null;
 
   if (supabaseUrl && supabaseAnonKey) {
     try {
@@ -52,50 +37,19 @@ export async function middleware(request: NextRequest) {
           },
         },
       });
-      // Refreshes the session if needed and propagates the cookies onto `response`.
-      const { data: { user } } = await supabase.auth.getUser();
-      userId = user?.id ?? null;
-
-      if (user) {
-        const { data: claims } = await supabase.auth.getClaims();
-        aal = (claims?.claims?.aal as "aal1" | "aal2" | undefined) ?? "aal1";
-      }
+      await supabase.auth.getUser();
     } catch {
-      // Fail open on session-refresh errors — gating below handles unauthed case.
+      // Fail open on any session-refresh error.
     }
   }
 
-  // AAL gate — applies to both pages and protected API routes.
-  if (isProtectedPath(pathname)) {
-    if (!userId) {
-      // Protected API → 401 JSON. Protected page → redirect to /login.
-      if (pathname.startsWith("/api/")) {
-        return new Response(JSON.stringify({ error: "unauthorized" }), {
-          status: 401,
-          headers: { "Content-Type": "application/json" },
-        });
-      }
-      const dest = new URL("/login", request.url);
-      dest.searchParams.set("next", pathname + request.nextUrl.search);
-      return NextResponse.redirect(dest);
+  if (request.nextUrl.pathname.startsWith("/api/")) {
+    try {
+      const block = await edgeBackstop(request);
+      if (block) return block;
+    } catch {
+      // Fail open on rate-limit infra errors.
     }
-    if (aal !== "aal2") {
-      if (pathname.startsWith("/api/")) {
-        return new Response(JSON.stringify({ error: "mfa_required" }), {
-          status: 401,
-          headers: { "Content-Type": "application/json" },
-        });
-      }
-      const dest = new URL("/auth/mfa", request.url);
-      dest.searchParams.set("next", pathname + request.nextUrl.search);
-      return NextResponse.redirect(dest);
-    }
-  }
-
-  // Coarse backstop on /api/* — 240 req/min per IP.
-  if (pathname.startsWith("/api/")) {
-    const block = await edgeBackstop(request);
-    if (block) return block;
   }
 
   return response;
@@ -104,7 +58,7 @@ export async function middleware(request: NextRequest) {
 async function edgeBackstop(req: NextRequest): Promise<Response | null> {
   const url = process.env.UPSTASH_REDIS_REST_URL;
   const token = process.env.UPSTASH_REDIS_REST_TOKEN;
-  if (!url || !token) return null; // missing infra → fail open in dev
+  if (!url || !token) return null;
 
   const ip =
     req.headers.get("cf-connecting-ip") ??
@@ -112,7 +66,6 @@ async function edgeBackstop(req: NextRequest): Promise<Response | null> {
     "unknown";
 
   const key = `rl:edge:${ip}:${Math.floor(Date.now() / 60_000)}`;
-  // INCR + EXPIRE in one call via Upstash REST pipeline
   const res = await fetch(`${url}/pipeline`, {
     method: "POST",
     headers: { Authorization: `Bearer ${token}`, "Content-Type": "application/json" },
@@ -121,7 +74,7 @@ async function edgeBackstop(req: NextRequest): Promise<Response | null> {
       ["EXPIRE", key, 90],
     ]),
   });
-  if (!res.ok) return null; // fail open if redis is degraded
+  if (!res.ok) return null;
   const result = (await res.json()) as Array<{ result: number }>;
   const count = result?.[0]?.result ?? 0;
 
@@ -136,10 +89,6 @@ async function edgeBackstop(req: NextRequest): Promise<Response | null> {
 
 export const config = {
   matcher: [
-    /*
-     * Skip Next.js internals and static assets. Match everything else (so the
-     * Supabase session is kept fresh on full page loads as well).
-     */
     "/((?!_next/static|_next/image|favicon.ico|.*\\.(?:svg|png|jpg|jpeg|gif|webp|ico|woff2?)$).*)",
   ],
 };
