@@ -31,7 +31,11 @@ export async function POST(req: Request) {
     const { data: created, error: createErr } = await sb.auth.admin.createUser({
       email: parsed.email,
       password: parsed.password,
-      email_confirm: false,
+      // MVP — skip email verification. Account is marked confirmed at creation
+      // time so users can sign in immediately without an email round-trip.
+      // Bring this back to `false` (and wire SMTP) when we ship forgot-password
+      // or need real email-ownership proof for App Store / production.
+      email_confirm: true,
       user_metadata: {
         display_name: parsed.displayName,
         date_of_birth: parsed.dateOfBirth,
@@ -70,7 +74,7 @@ export async function POST(req: Request) {
     });
 
     return json(
-      { ok: true, message: "Check your email to confirm your account" },
+      { ok: true, email: parsed.email },
       { status: 201 },
     );
   } catch (err) {
